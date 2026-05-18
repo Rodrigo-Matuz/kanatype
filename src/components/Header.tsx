@@ -36,6 +36,8 @@ type HeaderProps = {
 	 * Navigate to another view (e.g. table/reference screen)
 	 */
 	onNavigate: () => void;
+
+	currentView: "learn" | "table";
 };
 
 /**
@@ -48,7 +50,7 @@ type HeaderProps = {
  *
  * NOTE: This is a "control header", not just UI decoration.
  */
-export default function Header({ activeScripts, onToggle, onSelectAll, onNavigate }: HeaderProps) {
+export default function Header({ activeScripts, onToggle, onSelectAll, onNavigate, currentView }: HeaderProps) {
 	const { theme, setTheme } = useTheme();
 
 	/**
@@ -91,7 +93,7 @@ export default function Header({ activeScripts, onToggle, onSelectAll, onNavigat
 				{/* Switch to table/reference view */}
 				<Button type="button" onClick={onNavigate} size="lg">
 					<Table className="mr-2 w-4 h-4" />
-					View Table
+					{currentView === "table" ? "Back" : "View Table"}
 				</Button>
 
 				{/* Theme switcher */}

@@ -1,10 +1,11 @@
 import "@/App.css";
 import { useEffect, useRef, useState } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 import Display from "@/components/Display";
 import Header from "@/components/Header";
 import Input from "@/components/Input";
-
+import TablePage from "@/pages/Table";
 import type { DisplayHandle, ScriptType } from "@/types";
 
 /**
@@ -16,6 +17,8 @@ import type { DisplayHandle, ScriptType } from "@/types";
  * - Coordinate communication between Display and Input components
  */
 export default function App() {
+	const navigate = useNavigate();
+
 	/**
 	 * Active filters for what character sets should be used
 	 * Example: ["hiragana", "katakana"]
@@ -49,7 +52,7 @@ export default function App() {
 	 * (e.g. switching to kana table / reference screen)
 	 */
 	function handleNavigate() {
-		console.log("Switch to kana table page");
+		navigate("/table");
 	}
 
 	/**
@@ -90,23 +93,33 @@ export default function App() {
 	}
 
 	return (
-		<div className="flex flex-col w-full h-screen">
-			{/* Top navigation / controls */}
-			<Header
-				activeScripts={activeScripts}
-				onToggle={toggleScript}
-				onSelectAll={selectAll}
-				onNavigate={handleNavigate}
+		<Routes>
+			<Route
+				path="/"
+				element={
+					<div className="flex flex-col w-full h-screen">
+						<Header
+							activeScripts={activeScripts}
+							onToggle={toggleScript}
+							onSelectAll={selectAll}
+							onNavigate={handleNavigate}
+							currentView="learn"
+						/>
+
+						<div className="flex flex-col justify-start items-center pt-40 h-[40vh]">
+							<Display
+								ref={displayRef}
+								scriptTypes={activeScripts}
+								onChange={setCurrentItem}
+							/>
+
+							<Input currentItem={currentItem} onCorrect={handleCorrectAnswer} />
+						</div>
+					</div>
+				}
 			/>
 
-			{/* Main learning area */}
-			<div className="flex flex-col justify-start items-center pt-40 h-[40vh]">
-				{/* Character display */}
-				<Display ref={displayRef} scriptTypes={activeScripts} onChange={setCurrentItem} />
-
-				{/* User input / answer checking */}
-				<Input currentItem={currentItem} onCorrect={handleCorrectAnswer} />
-			</div>
-		</div>
+			<Route path="/table" element={<TablePage />} />
+		</Routes>
 	);
 }
