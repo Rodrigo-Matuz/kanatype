@@ -1,10 +1,10 @@
-// App.tsx
 import "@/App.css";
 import { useEffect, useRef, useState } from "react";
 
 import Display from "@/components/Display";
 import Header from "@/components/Header";
 import Input from "@/components/Input";
+
 import type { DisplayHandle, ScriptType } from "@/types";
 
 /**
