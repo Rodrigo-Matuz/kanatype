@@ -1,78 +1,63 @@
-// import { invoke } from "@tauri-apps/api/core";
-// import { useState } from "react";
-// import reactLogo from "./assets/react.svg";
-// import "./App.css";
-
-import { useState } from "react";
+import "@/App.css";
+import { useEffect, useRef, useState } from "react";
+import Display from "@/components/Display";
 import Header from "@/components/Header";
-import type { Mode } from "./types/headerTypes";
+import Input from "@/components/Input";
+import type { ScriptType } from "@/data";
+import type { DisplayHandle } from "@/types/displayTypes";
 
 export default function App() {
-	const [mode, setMode] = useState<Mode>("hiragana");
-	// 	const [greetMsg, setGreetMsg] = useState("");
-	// 	const [name, setName] = useState("");
+	const [activeScripts, setActiveScripts] = useState<ScriptType[]>(["hiragana"]);
+	const [currentItem, setCurrentItem] = useState<any>(null);
 
-	// 	async function greet() {
-	// 		// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-	// 		setGreetMsg(await invoke("greet", { name }));
-	// 	}
+	const displayRef = useRef<DisplayHandle>(null);
+
+	// Refresh display when scripts change
+	useEffect(() => {
+		displayRef.current?.next();
+	}, []);
 
 	function handleNavigate() {
 		console.log("Switch to kana table page");
 	}
 
-	function handleSubmit() {
-		console.log("User answer: ");
+	function toggleScript(script: ScriptType) {
+		setActiveScripts((prev) => {
+			if (prev.includes(script)) {
+				if (prev.length === 1) return prev; // prevent emptying
+				return prev.filter((s) => s !== script);
+			} else {
+				return [...prev, script];
+			}
+		});
 	}
 
-	function handleSwitch() {
-		const next = mode === "hiragana" ? "katakana" : "hiragana";
-		setMode(next);
-		console.log("Switched mode to: ", next);
+	function selectAll() {
+		setActiveScripts(["hiragana", "katakana", "kanji"]);
+	}
+
+	function handleCorrectAnswer() {
+		displayRef.current?.next();
 	}
 
 	return (
-		<div className="flex flex-col bg-gray-900 min-h-screen text-white">
+		<div className="flex flex-col w-full h-screen">
 			<Header
-				mode={mode}
+				activeScripts={activeScripts}
+				onToggle={toggleScript}
+				onSelectAll={selectAll}
 				onNavigate={handleNavigate}
-				onSwitch={(): void => {
-					throw new Error("Function not implemented.");
-				}}
 			/>
+
+			<div className="flex flex-col justify-start items-center pt-40 h-[40vh]">
+				<Display
+					ref={displayRef}
+					scriptTypes={activeScripts}
+					onChange={setCurrentItem}
+				/>
+
+				<Input currentItem={currentItem} onCorrect={handleCorrectAnswer} />
+			</div>
 		</div>
-
-		// 		<main className="bg-red-500">
-		// 			<h1>Welcome to Tauri + React</h1>
-
-		// 			<div className="row">
-		// 				<a href="https://vite.dev" target="_blank" rel="noopener">
-		// 					<img src="/vite.svg" className="logo vite" alt="Vite logo" />
-		// 				</a>
-		// 				<a href="https://tauri.app" target="_blank" rel="noopener">
-		// 					<img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-		// 				</a>
-		// 				<a href="https://react.dev" target="_blank" rel="noopener">
-		// 					<img src={reactLogo} className="logo react" alt="React logo" />
-		// 				</a>
-		// 			</div>
-		// 			<p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-		// 			<form
-		// 				className="row"
-		// 				onSubmit={(e) => {
-		// 					e.preventDefault();
-		// 					greet();
-		// 				}}
-		// 			>
-		// 				<input
-		// 					id="greet-input"
-		// 					onChange={(e) => setName(e.currentTarget.value)}
-		// 					placeholder="Enter a name..."
-		// 				/>
-		// 				<button type="submit">Greet</button>
-		// 			</form>
-		// 			<p>{greetMsg}</p>
-		// 		</main>
 	);
 }
