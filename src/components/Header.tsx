@@ -1,3 +1,4 @@
+import { Languages, Layers, Moon, Sun, Table } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import type { ScriptType } from "@/types";
@@ -80,6 +81,7 @@ export default function Header({ activeScripts, onToggle, onSelectAll, onNavigat
 
 				{/* Quick enable all scripts */}
 				<Button variant="ghost" onClick={onSelectAll} size="lg">
+					<Layers className="mr-2 w-4 h-4" />
 					All
 				</Button>
 			</div>
@@ -88,12 +90,26 @@ export default function Header({ activeScripts, onToggle, onSelectAll, onNavigat
 			<div className="flex gap-2">
 				{/* Switch to table/reference view */}
 				<Button type="button" onClick={onNavigate} size="lg">
+					<Table className="mr-2 w-4 h-4" />
 					View Table
 				</Button>
 
 				{/* Theme switcher */}
-				<Button type="button" onClick={toggleTheme} size="lg">
-					{theme === "dark" ? "Light Mode" : "Dark Mode"}
+				<Button size="lg" onClick={toggleTheme} className="relative px-5">
+					<Sun
+						className={`absolute transition-all duration-300 w-5 h-5
+							${theme === "dark"
+								? "opacity-0 rotate-90 scale-0"
+								: "opacity-100 rotate-0 scale-100"
+							}`}
+					/>
+					<Moon
+						className={`absolute transition-all duration-300 w-5 h-5
+							${theme === "dark"
+								? "opacity-100 rotate-0 scale-100"
+								: "opacity-0 -rotate-90 scale-0"
+							}`}
+					/>
 				</Button>
 			</div>
 		</header>
