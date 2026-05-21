@@ -8,7 +8,7 @@ Built with **Tauri** for a lightweight, native-feeling experience.
 
 ## Preview
 
-*(Add screenshots/GIFs here once you have them)*
+<img width="1672" height="941" alt="Image May 21, 2026, 03_35_46 PM" src="https://github.com/user-attachments/assets/a45df94c-dfa4-4bd9-9037-3216d63a150e" />
 
 ---
 
