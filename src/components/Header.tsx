@@ -1,4 +1,4 @@
-import { Languages, Layers, Moon, Sun, Table } from "lucide-react";
+import { Layers, Moon, Sun, Table } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import type { ScriptType } from "@/types";
