@@ -4,6 +4,11 @@
 	{ "romaji": "u", "kana": "ウ" },
 	{ "romaji": "e", "kana": "エ" },
 	{ "romaji": "o", "kana": "オ" },
+	{ "romaji": "small a", "kana": "ァ" },
+	{ "romaji": "small i", "kana": "ィ" },
+	{ "romaji": "small u", "kana": "ゥ" },
+	{ "romaji": "small e", "kana": "ェ" },
+	{ "romaji": "small o", "kana": "ォ" },
 
 	{ "romaji": "ka", "kana": "カ" },
 	{ "romaji": "ki", "kana": "キ" },
@@ -20,6 +25,7 @@
 	{ "romaji": "ta", "kana": "タ" },
 	{ "romaji": "chi", "kana": "チ" },
 	{ "romaji": "tsu", "kana": "ツ" },
+	{ "romaji": "small tsu", "kana": "ッ" },
 	{ "romaji": "te", "kana": "テ" },
 	{ "romaji": "to", "kana": "ト" },
 
@@ -44,6 +50,9 @@
 	{ "romaji": "ya", "kana": "ヤ" },
 	{ "romaji": "yu", "kana": "ユ" },
 	{ "romaji": "yo", "kana": "ヨ" },
+	{ "romaji": "small ya", "kana": "ャ" },
+	{ "romaji": "small yu", "kana": "ュ" },
+	{ "romaji": "small yo", "kana": "ョ" },
 
 	{ "romaji": "ra", "kana": "ラ" },
 	{ "romaji": "ri", "kana": "リ" },
@@ -83,5 +92,49 @@
 	{ "romaji": "pi", "kana": "ピ" },
 	{ "romaji": "pu", "kana": "プ" },
 	{ "romaji": "pe", "kana": "ペ" },
-	{ "romaji": "po", "kana": "ポ" }
+	{ "romaji": "po", "kana": "ポ" },
+
+	{ "romaji": "kya", "kana": "キャ" },
+	{ "romaji": "kyu", "kana": "キュ" },
+	{ "romaji": "kyo", "kana": "キョ" },
+
+	{ "romaji": "gya", "kana": "ギャ" },
+	{ "romaji": "gyu", "kana": "ギュ" },
+	{ "romaji": "gyo", "kana": "ギョ" },
+
+	{ "romaji": "sha", "kana": "シャ" },
+	{ "romaji": "shu", "kana": "シュ" },
+	{ "romaji": "sho", "kana": "ショ" },
+
+	{ "romaji": "cha", "kana": "チャ" },
+	{ "romaji": "chu", "kana": "チュ" },
+	{ "romaji": "cho", "kana": "チョ" },
+
+	{ "romaji": "nya", "kana": "ニャ" },
+	{ "romaji": "nyu", "kana": "ニュ" },
+	{ "romaji": "nyo", "kana": "ニョ" },
+
+	{ "romaji": "hya", "kana": "ヒャ" },
+	{ "romaji": "hyu", "kana": "ヒュ" },
+	{ "romaji": "hyo", "kana": "ヒョ" },
+
+	{ "romaji": "mya", "kana": "ミャ" },
+	{ "romaji": "myu", "kana": "ミュ" },
+	{ "romaji": "myo", "kana": "ミョ" },
+
+	{ "romaji": "rya", "kana": "リャ" },
+	{ "romaji": "ryu", "kana": "リュ" },
+	{ "romaji": "ryo", "kana": "リョ" },
+
+	{ "romaji": "bya", "kana": "ビャ" },
+	{ "romaji": "byu", "kana": "ビュ" },
+	{ "romaji": "byo", "kana": "ビョ" },
+
+	{ "romaji": "pya", "kana": "ピャ" },
+	{ "romaji": "pyu", "kana": "ピュ" },
+	{ "romaji": "pyo", "kana": "ピョ" },
+
+	{ "romaji": "ja", "kana": "ジャ" },
+	{ "romaji": "ju", "kana": "ジュ" },
+	{ "romaji": "jo", "kana": "ジョ" }
 ]
