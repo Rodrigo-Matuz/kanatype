@@ -1,34 +1,28 @@
-### Why small tsu (っ) and small vowels (ぁ ぃ ぅ ぇ ぉ) are **not included**
+### Why small vowels (ぁ ぃ ぅ ぇ ぉ) are **not included**
 
-I intentionally chose not to include:
-- `っ` (small tsu / sokuon)
-- `ぁ ぃ ぅ ぇ ぉ` (small vowels)
+I intentionally chose **not** to include the small vowels (`ぁ ぃ ぅ ぇ ぉ`).
 
-### Reasons for exclusion:
+However, **small tsu (っ)** *is* included in this JSON because it is by far the most commonly used small character in Japanese.
 
-- They function as **modifiers** rather than standalone characters, so they require different handling in code.
-- They look very similar to their full-sized versions, which can cause confusion for learners.
+### Reasons for excluding small vowels:
+
+- They look very similar to their full-sized versions, which can cause confusion for beginners.
 - They appear much less frequently than basic hiragana and yōon combinations.
-- Keeping the JSON clean, simple, and beginner-friendly was a priority.
+- Keeping the JSON clean and focused was a priority.
 
-### When and why you should add them:
+### Note about small tsu (っ)
 
-**Small tsu (っ)**  
-- Used to double consonants (e.g. `katta` → かった, `ippai` → いっぱい, `massugu` → まっすぐ).  
-- Extremely common in everyday Japanese.  
-- **How to add:** Append this to your `hiragana.json`:
-  ```json
-  { "romaji": "small tsu", "kana": "っ" }
-  ```
+- **Included** because it is extremely common in real Japanese.
+- Used to create double consonants (e.g. `katta` → かった, `ippai` → いっぱい, `massugu` → まっすぐ).
+- This is the **only** small version added in this dataset.
 
-**Small vowels (ぁ ぃ ぅ ぇ ぉ)**  
-- Used for special readings, emphasis, or phonetic adjustments (especially in names and loanwords).  
-- More common in katakana, but they also appear in hiragana occasionally.  
-- **How to add:** Append these to your `hiragana.json`:
-  ```json
-  { "romaji": "small a", "kana": "ぁ" },
-  { "romaji": "small i", "kana": "ぃ" },
-  { "romaji": "small u", "kana": "ぅ" },
-  { "romaji": "small e", "kana": "ぇ" },
-  { "romaji": "small o", "kana": "ぉ" }
-  ```
+### How to add small vowels (if you need them)
+
+If you want full coverage, you can append these to `hiragana.json`:
+
+```json
+{ "romaji": "small a", "kana": "ぁ" },
+{ "romaji": "small i", "kana": "ぃ" },
+{ "romaji": "small u", "kana": "ぅ" },
+{ "romaji": "small e", "kana": "ぇ" },
+{ "romaji": "small o", "kana": "ぉ" }
