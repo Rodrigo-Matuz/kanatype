@@ -73,5 +73,3 @@ You are completely free to modify this dataset according to your needs.
 Feel free to add any missing characters or remove anything you don’t need.  
 
 > The current selection reflects my personal decisions on what provides the best balance between completeness and simplicity for most learners and developers. Some items were included for high practical usage, while others were excluded to keep the JSON clean and beginner-friendly.
-
-

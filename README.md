@@ -89,7 +89,7 @@ npm run dev
 Then open:
 
 ```
-http://localhost:5173
+http://localhost:1420 (most likely)
 ```
 
 This mode is ideal for faster development and testing UI changes.
@@ -114,7 +114,7 @@ You can easily modify the character datasets (Hiragana, Katakana, and Kanji) to 
 
 For detailed information about the current datasets and how to customize them, see:
 
-→ **[src/data/README.md](https://github.com/Rodrigo-Matuz/kanatype/blob/main/src/data/README.md)**
+→ **[src/data/README.md](https://github.com/Rodrigo-Matuz/kanatype/blob/main/src/data)**
 
 This document includes explanations about small characters, yōon combinations, design decisions, and instructions for adding or removing characters.
 
