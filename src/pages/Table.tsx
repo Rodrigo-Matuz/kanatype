@@ -122,18 +122,7 @@ export default function TablePage() {
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 						placeholder="Search kana, romaji or meaning..."
-						className="
-							bg-background
-							px-6
-							py-3.5
-							w-full
-							max-w-3xl
-							text-base
-							border-b-5
-							placeholder:text-muted-foreground
-							focus:border-primary
-							focus:outline-none
-						"
+						className="bg-background px-6 py-3.5 focus:border-primary border-b-5 focus:outline-none w-full max-w-3xl placeholder:text-muted-foreground text-base"
 					/>
 				</div>
 
