@@ -1,24 +1,29 @@
-### Why small vowels (ぁ ぃ ぅ ぇ ぉ) are **not included**
+### Small characters in this JSON
 
-I intentionally chose **not** to include the small vowels (`ぁ ぃ ぅ ぇ ぉ`).
+This dataset includes:
+- `っ` (small tsu)
+- `ゃ ゅ ょ` (small ya, yu, yo)
 
-However, **small tsu (っ)** *is* included in this JSON because it is by far the most commonly used small character in Japanese.
+**Small tsu (っ)** and the **small y-sounds (ゃ ゅ ょ)** are the only small characters included.
 
-### Reasons for excluding small vowels:
+### Why I included them:
 
-- They look very similar to their full-sized versions, which can cause confusion for beginners.
-- They appear much less frequently than basic hiragana and yōon combinations.
-- Keeping the JSON clean and focused was a priority.
+- **`っ` (small tsu)** is extremely common and essential for natural Japanese.  
+  It is used to create double consonants (e.g. `katta` → かった, `ippai` → いっぱい, `massugu` → まっすぐ).
 
-### Note about small tsu (っ)
+- **`ゃ ゅ ょ` (small ya/yu/yo)** are also very important because they are heavily used in **yōon** combinations (e.g. `kya` = きゃ, `shu` = しゅ, `cho` = ちょ, `nya` = にゃ, etc.).  
+  While they mostly appear as part of combined sounds, including them as separate entries makes the dataset more complete and useful for learners and developers. (As pointed out by anatom. inc.)
 
-- **Included** because it is extremely common in real Japanese.
-- Used to create double consonants (e.g. `katta` → かった, `ippai` → いっぱい, `massugu` → まっすぐ).
-- This is the **only** small version added in this dataset.
+### Why small vowels (ぁ ぃ ぅ ぇ ぉ) are **not included**:
 
-### How to add small vowels (if you need them)
+- They function mainly as **modifiers** for special readings (especially in katakana loanwords).
+- They are used much less frequently than small tsu and small y-sounds.
+- They look very similar to their normal-sized versions, which can be confusing.
+- I wanted to keep the JSON clean and focused on the most practical characters, but you can add them if you want
 
-If you want full coverage, you can append these to `hiragana.json`:
+### How to add small vowels (if you need them later)
+
+If you want full coverage, append these to `hiragana.json`:
 
 ```json
 { "romaji": "small a", "kana": "ぁ" },

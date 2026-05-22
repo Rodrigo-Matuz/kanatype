@@ -45,6 +45,9 @@
 	{ "romaji": "ya", "kana": "や" },
 	{ "romaji": "yu", "kana": "ゆ" },
 	{ "romaji": "yo", "kana": "よ" },
+	{ "romaji": "small ya", "kana": "ゃ" },
+	{ "romaji": "small yu", "kana": "ゅ" },
+	{ "romaji": "small yo", "kana": "ょ" },
 
 	{ "romaji": "ra", "kana": "ら" },
 	{ "romaji": "ri", "kana": "り" },
