@@ -8,7 +8,7 @@ Built with **Tauri** for a lightweight, native-feeling experience.
 
 ## Preview
 
-<img width="1672" height="941" alt="Image May 21, 2026, 03_35_46 PM" src="https://github.com/user-attachments/assets/a45df94c-dfa4-4bd9-9037-3216d63a150e" />
+<img width="5000" height="2800" alt="KataType App Dark and White mode" src="https://github.com/user-attachments/assets/5e7cf232-708c-4c80-a640-87b43864d1da" />
 
 ---
 
@@ -31,16 +31,6 @@ This application is built with **Tauri 2** — a secure and lightweight framewor
   High performance, memory safety, and native system integration
 - **Frontend**: React + TypeScript + Vite  
   Modern, type-safe, and fast development experience
-
----
-
-## Dependencies
-
-- **Tauri** (v2)
-- **React** + **TypeScript**
-- **Vite** (build tool)
-- **Lucide React** (icons)
-- **next-themes** (theme management)
 
 ---
 
@@ -102,11 +92,7 @@ Then open:
 http://localhost:5173
 ```
 
-This mode is ideal for:
-
-* Faster development
-* Testing UI changes instantly
-* Running without Tauri/desktop build overhead
+This mode is ideal for faster development and testing UI changes.
 </details>
 
 ---
@@ -122,20 +108,23 @@ src-tauri/capabilities/permissions.json
 
 ---
 
-## Project Structure
+## Customizing Datasets
 
-```
-kanatype/
-├── src/                    # React + TypeScript frontend
-│   ├── components/         # Reusable UI components
-│   ├── pages/              # Main views (Learn, Table)
-│   ├── data/               # Character datasets
-│   └── lib/                # Utilities
-├── src-tauri/              # Rust backend
-│   ├── src/
-│   └── tauri.conf.json
-└── public/                 # Static assets
-```
+You can easily modify the character datasets (Hiragana, Katakana, and Kanji) to suit your learning needs.
+
+For detailed information about the current datasets and how to customize them, see:
+
+→ **[src/data/README.md](https://github.com/Rodrigo-Matuz/kanatype/blob/main/src/data/README.md)**
+
+This document includes explanations about small characters, yōon combinations, design decisions, and instructions for adding or removing characters.
+
+---
+
+## TODO
+
+- [ ] **Settings Page**
+  - Themes and user preferences
+  - In-app dataset editor (modify characters, add custom entries, etc.)
 
 ---
 
@@ -153,7 +142,7 @@ Contributions are welcome! Feel free to open issues or submit pull requests for:
 
 ## Support the Project
 
-If you find **Kanatype** useful and want to support its development, consider [sponsoring me on Ko-fi](https://ko-fi.com/matuz) (same as Wallpaper Picker UI).
+If you find **Kanatype** useful and want to support its development, consider [sponsoring me on Ko-fi](https://ko-fi.com/matuz).
 
 Any amount is greatly appreciated!
 
