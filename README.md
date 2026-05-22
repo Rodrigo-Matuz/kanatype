@@ -38,7 +38,7 @@ This application is built with **Tauri 2** — a secure and lightweight framewor
 
 ### From Releases (Recommended)
 
-Go to the [Releases](../../releases) page and download the latest version for your operating system.
+Go to the [Releases](https://github.com/Rodrigo-Matuz/kanatype/releases/) page and download the latest version for your operating system.
 
 ### Build from Source
 
