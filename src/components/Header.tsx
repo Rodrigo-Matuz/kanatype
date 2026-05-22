@@ -63,7 +63,7 @@ export default function Header({ activeScripts, onToggle, onSelectAll, onNavigat
 	};
 
 	return (
-		<header className="flex justify-between items-center bg-background p-5 border-b w-full">
+		<header className="flex justify-between items-center bg-background p-5 w-full">
 			{/* Left side: script filters */}
 			<div className="flex gap-2">
 				{scriptOptions.map(({ key, label }) => (

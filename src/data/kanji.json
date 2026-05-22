@@ -1,0 +1,49 @@
+[
+	{ "romaji": "ichi", "kanji": "一", "meaning": "one" },
+	{ "romaji": "ni", "kanji": "二", "meaning": "two" },
+	{ "romaji": "san", "kanji": "三", "meaning": "three" },
+	{ "romaji": "shi", "kanji": "四", "meaning": "four" },
+	{ "romaji": "go", "kanji": "五", "meaning": "five" },
+	{ "romaji": "roku", "kanji": "六", "meaning": "six" },
+	{ "romaji": "shichi", "kanji": "七", "meaning": "seven" },
+	{ "romaji": "hachi", "kanji": "八", "meaning": "eight" },
+	{ "romaji": "kyuu", "kanji": "九", "meaning": "nine" },
+	{ "romaji": "juu", "kanji": "十", "meaning": "ten" },
+
+	{ "romaji": "hyaku", "kanji": "百", "meaning": "hundred" },
+	{ "romaji": "sen", "kanji": "千", "meaning": "thousand" },
+	{ "romaji": "man", "kanji": "万", "meaning": "ten thousand" },
+
+	{ "romaji": "nichi", "kanji": "日", "meaning": "day / sun" },
+	{ "romaji": "tsuki", "kanji": "月", "meaning": "moon / month" },
+	{ "romaji": "hi", "kanji": "火", "meaning": "fire" },
+	{ "romaji": "mizu", "kanji": "水", "meaning": "water" },
+	{ "romaji": "ki", "kanji": "木", "meaning": "tree / wood" },
+	{ "romaji": "kin", "kanji": "金", "meaning": "gold / money" },
+	{ "romaji": "tsuchi", "kanji": "土", "meaning": "earth" },
+
+	{ "romaji": "yama", "kanji": "山", "meaning": "mountain" },
+	{ "romaji": "kawa", "kanji": "川", "meaning": "river" },
+	{ "romaji": "hito", "kanji": "人", "meaning": "person" },
+
+	{ "romaji": "dai", "kanji": "大", "meaning": "big" },
+	{ "romaji": "shou", "kanji": "小", "meaning": "small" },
+	{ "romaji": "naka", "kanji": "中", "meaning": "middle" },
+
+	{ "romaji": "ue", "kanji": "上", "meaning": "up" },
+	{ "romaji": "shita", "kanji": "下", "meaning": "down" },
+	{ "romaji": "higashi", "kanji": "東", "meaning": "east" },
+	{ "romaji": "nishi", "kanji": "西", "meaning": "west" },
+	{ "romaji": "minami", "kanji": "南", "meaning": "south" },
+	{ "romaji": "kita", "kanji": "北", "meaning": "north" },
+
+	{ "romaji": "gaku", "kanji": "学", "meaning": "study" },
+	{ "romaji": "kou", "kanji": "校", "meaning": "school" },
+	{ "romaji": "sei", "kanji": "生", "meaning": "life / student" },
+
+	{ "romaji": "ima", "kanji": "今", "meaning": "now" },
+	{ "romaji": "toki", "kanji": "時", "meaning": "time" },
+	{ "romaji": "nen", "kanji": "年", "meaning": "year" },
+	{ "romaji": "go", "kanji": "語", "meaning": "language" },
+	{ "romaji": "hon", "kanji": "本", "meaning": "book / origin" }
+]

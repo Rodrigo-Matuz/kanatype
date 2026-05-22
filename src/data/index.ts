@@ -1,42 +1,38 @@
-import japaneseData from "@/data/japanese.json";
-import type { ScriptType } from "@/types/dataTypes";
-import type { JapaneseItem } from "@/types/displayTypes";
+import hiragana from "@/data/hiragana.json";
+import kanji from "@/data/kanji.json";
+import katakana from "@/data/katakana.json";
+import type { JapaneseItem, ScriptType } from "@/types";
 
-/**
- * Returns a combined dataset based on selected script types.
- *
- * Behavior:
- * - If no types are provided → defaults to hiragana only
- * - If multiple types are provided → merges all matching datasets
- *
- * Example:
- * getDataByTypes(["hiragana", "kanji"])
- */
 export const getDataByTypes = (types: ScriptType[]): JapaneseItem[] => {
-	/**
-	 * Safety fallback:
-	 * If user somehow has no selection, we default to hiragana
-	 * so the app always has usable content.
-	 */
-	if (types.length === 0) {
-		return japaneseData.hiragana;
-	}
+	if (types.length === 0) types = ["hiragana"];
 
 	const result: JapaneseItem[] = [];
 
-	/**
-	 * Merge datasets based on selected filters
-	 */
 	if (types.includes("hiragana")) {
-		result.push(...japaneseData.hiragana);
+		result.push(
+			...hiragana.map(item => ({
+				...item,
+				type: "hiragana" as const,
+			}))
+		);
 	}
 
 	if (types.includes("katakana")) {
-		result.push(...japaneseData.katakana);
+		result.push(
+			...katakana.map(item => ({
+				...item,
+				type: "katakana" as const
+			}))
+		)
 	}
 
 	if (types.includes("kanji")) {
-		result.push(...japaneseData.kanji);
+		result.push(
+			...kanji.map(item => ({
+				...item, 
+				type: "kanji" as const
+			}))
+		)
 	}
 
 	return result;

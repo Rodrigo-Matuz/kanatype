@@ -11,6 +11,8 @@ import type {
 	DisplayHandle,
 	DisplayProps,
 	JapaneseItem,
+	KanaItem,
+	KanjiItem,
 	ScriptType,
 } from "@/types";
 
@@ -78,10 +80,10 @@ const Display = forwardRef<DisplayHandle, Props>(
 		 * Kanji items use:
 		 * - current.kanji
 		 */
-		const displayCharacter =
-			current.type === "kanji"
-				? current.kanji
-				: current.kana;
+		const displayCharacter = 
+		current.type === "kanji" 
+			? (current as KanjiItem).kanji 
+			: (current as KanaItem).kana;
 
 		return (
 			<div className="flex flex-col justify-center items-center h-[40vh]">

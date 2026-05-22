@@ -219,7 +219,7 @@ export default function Input({
 				 * - green → correct answer
 				 * - gray  → default state
 				 */
-				className={`w-full outline-none focus-visible:ring-0 text-center text-3xl py-5 border-b-4 transition-all duration-200 focus:outline-none
+				className={`w-full outline-none focus-visible:ring-0 text-center text-3xl py-5 border-b-5 transition-all duration-200 focus:outline-none
 					${
 						isError
 							? "border-destructive"
