@@ -40,6 +40,35 @@ This application is built with **Tauri 2** — a secure and lightweight framewor
 
 Go to the [Releases](https://github.com/Rodrigo-Matuz/kanatype/releases/) page and download the latest version for your operating system.
 
+### NixOS / Home Manager (x86_64 Linux)
+
+Add the input to your existing `flake.nix`:
+
+```nix
+inputs.kanatype.url = "github:Rodrigo-Matuz/kanatype";
+```
+
+Then import and enable its module in your Home Manager configuration:
+
+```nix
+{ inputs, ... }: {
+  imports = [ inputs.kanatype.homeManagerModules.default ];
+  programs.kanatype.enable = true;
+}
+```
+
+For a standalone Home Manager flake, pass `inputs` with
+`home-manager.lib.homeManagerConfiguration { extraSpecialArgs = { inherit inputs; }; ... }`.
+For NixOS with Home Manager as a module, set
+`home-manager.extraSpecialArgs = { inherit inputs; };` instead.
+Then apply your usual Home Manager or NixOS configuration. The package installs
+`kanatype` and a desktop launcher. Alternatively, install just the package with
+`nix profile install github:Rodrigo-Matuz/kanatype` (do not install it both ways).
+
+The flake currently packages the **1.0.0** Linux `.deb` release for x86_64;
+updating to a newer release requires changing the version and verified hash in
+`flake.nix`. The flake is not a build of your local working tree.
+
 ### Build from Source
 
 <details>
