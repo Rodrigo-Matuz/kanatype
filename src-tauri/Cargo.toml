@@ -1,7 +1,7 @@
 [package]
 name = "kanatype"
 version = "1.0.0"
-description = "A Tauri App"
+description = "Practice Japanese kana and kanji with instant feedback"
 authors = ["Rodrigo Matuz <rodrigosantoslima1311@gmail.com>"]
 repository = "https://github.com/Rodrigo-Matuz/kanatype"
 edition = "2021"

@@ -4,13 +4,15 @@ export function CharacterCard({ item }: { item: JapaneseItem }) {
 	const character = item.type === "kanji" ? item.kanji : item.kana;
 
 	return (
-		<div className="p-8 rounded-3xl hover:text-accent text-center hover:scale-105 active:scale-95 transition-all">
-			<div className="mb-4 text-6xl leading-none">{character}</div>
+		<div className="border border-border bg-card p-4 text-center transition-colors hover:border-primary">
+			<div className="mb-3 text-5xl leading-none" lang="ja">
+				{character}
+			</div>
 
-			<div className="font-medium text-foreground text-xl">{item.romaji}</div>
+			<div className="font-medium text-foreground text-sm">{item.romaji}</div>
 
 			{item.type === "kanji" && (
-				<div className="mt-3 text-muted-foreground text-sm leading-snug">
+				<div className="mt-2 text-muted-foreground text-xs leading-snug">
 					{item.meaning}
 				</div>
 			)}

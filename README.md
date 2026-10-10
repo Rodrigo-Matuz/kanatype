@@ -1,4 +1,4 @@
-# Kanatype
+# KanataType
 
 A clean, focused desktop app for learning and practicing Japanese kana (Hiragana & Katakana) and Kanji.
 
@@ -8,7 +8,7 @@ Built with **Tauri** for a lightweight, native-feeling experience.
 
 ## Preview
 
-<img width="5000" height="2800" alt="KataType App Dark and White mode" src="https://github.com/user-attachments/assets/5e7cf232-708c-4c80-a640-87b43864d1da" />
+![KanataType practice screen](assets/preview.png)
 
 ---
 
@@ -16,10 +16,10 @@ Built with **Tauri** for a lightweight, native-feeling experience.
 
 - **Multiple Script Modes**: Practice Hiragana, Katakana, Kanji — individually or combined
 - **Smart Filtering**: Toggle any combination of scripts (always at least one active)
-- **Interactive Learning**: Character display + input component with instant feedback
-- **Reference Table**: Quick-access kana/kanji table view
-- **Dark/Light Theme**: Built-in theme switcher with smooth transitions
-- **Responsive & Clean UI**: Modern React + TypeScript frontend
+- **Interactive Learning**: Type the reading, reveal a hint, or skip to the next character; practice counts and streaks update as you go
+- **Reference Table**: Search kana and kanji by character, romaji, or meaning
+- **Dark/Light Theme**: Built-in theme switcher that follows the system by default
+- **Responsive UI**: Keyboard-accessible React + TypeScript interface
 
 ---
 
@@ -66,17 +66,22 @@ Then apply your usual Home Manager or NixOS configuration. The package installs
 `nix profile install github:Rodrigo-Matuz/kanatype` (do not install it both ways).
 
 The flake currently packages the **1.0.0** Linux `.deb` release for x86_64;
-updating to a newer release requires changing the version and verified hash in
-`flake.nix`. The flake is not a build of your local working tree.
+it relabels the launcher as KanataType with the new description, but the app
+inside is still the 1.0.0 build. The interface changes in this repository will
+only reach Nix users after a new release is built and the version and verified
+hash in `flake.nix` are updated. The flake is not a build of your local working
+tree.
 
 ### Build from Source
 
 <details>
+<summary>Build instructions</summary>
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/Rodrigo-Matuz/kanatype.git
    cd kanatype
-```
+   ```
 
 2. **Install frontend dependencies**
 
@@ -107,6 +112,8 @@ src-tauri/target/release/
 ## Run Locally (Browser Mode)
 
 <details>
+<summary>Start the browser preview</summary>
+
 If you don’t want to build the desktop app, you can run it directly in your browser for development:
 
 ```bash
@@ -122,17 +129,19 @@ http://localhost:1420 (most likely)
 ```
 
 This mode is ideal for faster development and testing UI changes.
+
+Run the frontend checks with `bun test` and `bun run build`.
 </details>
 
 ---
 
 ## Permissions & Security
 
-Kanatype follows **Tauri 2**'s strict capability-based permission model and only requests the minimum permissions needed.
+KanataType follows **Tauri 2**'s strict capability-based permission model and only requests the minimum permissions needed.
 
 You can inspect all permissions in:
 ```json
-src-tauri/capabilities/permissions.json
+src-tauri/capabilities/default.json
 ```
 
 ---
@@ -143,7 +152,7 @@ You can easily modify the character datasets (Hiragana, Katakana, and Kanji) to 
 
 For detailed information about the current datasets and how to customize them, see:
 
-→ **[src/data/README.md](https://github.com/Rodrigo-Matuz/kanatype/blob/main/src/data)**
+→ **[src/data/README.md](src/data/README.md)**
 
 This document includes explanations about small characters, yōon combinations, design decisions, and instructions for adding or removing characters.
 
@@ -171,7 +180,7 @@ Contributions are welcome! Feel free to open issues or submit pull requests for:
 
 ## Support the Project
 
-If you find **Kanatype** useful and want to support its development, consider [sponsoring me on Ko-fi](https://ko-fi.com/matuz).
+If you find **KanataType** useful and want to support its development, consider [sponsoring me on Ko-fi](https://ko-fi.com/matuz).
 
 Any amount is greatly appreciated!
 

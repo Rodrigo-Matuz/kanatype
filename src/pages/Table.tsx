@@ -1,145 +1,78 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Search } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CharacterSection } from "@/components/CharacterSection";
 import Header from "@/components/Header";
-
 import { getDataByTypes } from "@/data";
-
 import type { KanaItem, KanjiItem } from "@/types";
 
-/**
-/**
- * TablePage
- *
- * Displays all Japanese characters (Hiragana, Katakana, and Kanji) with
- * real-time search filtering.
- *
- * Features:
- * - Live fuzzy search across kana, romaji, and meanings
- * - Auto-focus on search input
- * - Grouped sections by character type
- */
+const allItems = getDataByTypes(["hiragana", "katakana", "kanji"]);
+
 export default function TablePage() {
 	const navigate = useNavigate();
-
-	// Search state
 	const [search, setSearch] = useState("");
 	const searchInputRef = useRef<HTMLInputElement>(null);
-	const handleNavigateHome = () => navigate("/");
 
-	// Auto-focus search input on mount
-	useEffect(() => {
-		searchInputRef.current?.focus();
-	}, []);
-
-	/**
-	 * Normalized search query
-	 *
-	 * Why useMemo?
-	 *   Prevents recalculating every render unless `search` changes.
-	 */
-	const query = useMemo(() => {
-		return search.toLowerCase().trim();
+	const filteredItems = useMemo(() => {
+		const query = search.toLowerCase().trim();
+		if (!query) return allItems;
+		return allItems.filter(
+			(item) =>
+				item.romaji.toLowerCase().includes(query) ||
+				(item.type === "kanji"
+					? item.kanji.includes(query) || item.meaning.toLowerCase().includes(query)
+					: item.kana.includes(query)),
+		);
 	}, [search]);
 
-	/**
-	 * 	Load all character data (static)
-	 *
-	 * This grabs ALL supported data types from the data layer.
-	 */
-	const allItems = useMemo(() => {
-		return getDataByTypes(["hiragana", "katakana", "kanji"]);
-	}, []);
-
-	/**
-	 * Filter items based on search query
-	 *
-	 * Search behavior:
-	 * - Kana: matches kana symbol or romaji
-	 * - Kanji: matches kanji, romaji, or english meaning
-	 *
-	 * Romaji matching is intentionally fuzzy:
-	 * - `includes()` + `startsWith()` allows partial matches
-	 *   (e.g. "ky" matches kya/kyo/kyu, "u" matches tsu/myu/etc.)
-	 */
-	const filteredItems = useMemo(() => {
-		 // No search query? Return ALL items immediately.
-		if (!query) {
-			return allItems;
-		}
-
-		return allItems.filter((item) => {
-			const romajiLower = item.romaji.toLowerCase();
-			const queryLower = query;
-
-			const matchesRomaji =
-				romajiLower.includes(queryLower) || romajiLower.startsWith(queryLower);
-
-			// Kana item
-			if (item.type !== "kanji") {
-				return item.kana.includes(query) || matchesRomaji;
-			}
-
-			// Kanji item
-			return (
-				item.kanji.includes(query) ||
-				matchesRomaji ||
-				item.meaning.toLowerCase().includes(queryLower)
-			);
-		});
-	}, [allItems, query]);
-
-	// Group items by type
-	const hiraganaItems = useMemo(
-		() => filteredItems.filter((item): item is KanaItem => item.type === "hiragana"),
-		[filteredItems],
+	const hiraganaItems = filteredItems.filter(
+		(item): item is KanaItem => item.type === "hiragana",
 	);
-
-	const katakanaItems = useMemo(
-		() => filteredItems.filter((item): item is KanaItem => item.type === "katakana"),
-		[filteredItems],
+	const katakanaItems = filteredItems.filter(
+		(item): item is KanaItem => item.type === "katakana",
 	);
-
-	const kanjiItems = useMemo(
-		() => filteredItems.filter((item): item is KanjiItem => item.type === "kanji"),
-		[filteredItems],
-	);
+	const kanjiItems = filteredItems.filter((item): item is KanjiItem => item.type === "kanji");
 
 	return (
-			<div className="flex flex-col w-full h-screen">
-				<Header
-					activeScripts={[]}
-					onToggle={() => {}}
-					onSelectAll={() => {}}
-					onNavigate={handleNavigateHome}
-					currentView="table"
-				/>
-
-				{/* Search Bar */}
-				<div className="flex justify-center px-6 py-8">
+		<div className="app-shell reference-shell">
+			<Header mode="table" onNavigate={() => navigate("/")} />
+			<main className="reference-main">
+				<div className="reference-intro">
+					<div>
+						<p className="eyebrow">THE LIBRARY / 02</p>
+						<h1>Character reference.</h1>
+						<p>Search by character, reading, or meaning.</p>
+					</div>
+					<span className="result-count">
+						{filteredItems.length}{" "}
+						{filteredItems.length === 1 ? "character" : "characters"}
+					</span>
+				</div>
+				<div className="search-control">
+					<Search aria-hidden="true" size={20} />
+					<label htmlFor="character-search" className="sr-only">
+						Search characters, romaji, or meaning
+					</label>
 					<input
+						id="character-search"
 						ref={searchInputRef}
 						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Search kana, romaji or meaning..."
-						className="bg-background px-6 py-3.5 focus:border-primary border-b-5 focus:outline-none w-full max-w-3xl placeholder:text-muted-foreground text-base"
+						onChange={(event) => setSearch(event.target.value)}
+						placeholder="Search kana, romaji, or meaning…"
+						spellCheck={false}
 					/>
 				</div>
-
-				{/* Main Content */}
-				<div className="flex-1 space-y-20 p-6 md:p-12 overflow-y-auto">
+				<div className="reference-sections">
 					<CharacterSection title="Hiragana" items={hiraganaItems} />
 					<CharacterSection title="Katakana" items={katakanaItems} />
 					<CharacterSection title="Kanji" items={kanjiItems} />
-
-					{query && filteredItems.length === 0 && (
-						<div className="py-20 text-center">
-							<p className="text-muted-foreground text-2xl">
-								No results found for "{search}"
-							</p>
-						</div>
+					{filteredItems.length === 0 && (
+						<p className="empty-results">
+							No matches for “{search}”. Try another reading or character.
+						</p>
 					)}
 				</div>
-			</div>
-		);
+			</main>
+		</div>
+	);
 }

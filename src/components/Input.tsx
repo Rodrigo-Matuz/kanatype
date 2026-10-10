@@ -1,149 +1,108 @@
+import { ArrowRight, Eye, SkipForward } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Kbd } from "@/components/ui/kbd";
-
+import { Button } from "@/components/ui/button";
+import { normalizeAnswer } from "@/lib/practice";
 import type { JapaneseItem } from "@/types";
 
-/**
- * Random motivational messages shown after correct answers
- */
-const motivationalPhrases = [
-	"Great job!",
-	"Nice!",
-	"Perfect!",
-	"You're killing it!",
-	"Awesome!",
-	"Well done!",
-	"Correct!",
-	"Excellent!",
-];
-
 type Props = {
-	currentItem: JapaneseItem | null;
+	currentItem: JapaneseItem;
 	onCorrect: () => void;
+	onSkip: () => void;
+	onWrong: () => void;
 };
 
-/**
- * Input component
- *
- * Handles user input, answer validation, and keyboard shortcuts:
- * - Enter → verify answer
- * - Tab   → reveal romaji hint
- */
-export default function Input({ currentItem, onCorrect }: Props) {
+export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props) {
 	const [answer, setAnswer] = useState("");
-	const [hintType, setHintType] = useState<"verify" | "success" | "error" | "hint">("verify");
-	const [hintText, setHintText] = useState("Press Enter to verify");
-	const [isError, setIsError] = useState(false);
-	const [isSuccess, setIsSuccess] = useState(false);
-
+	const [feedback, setFeedback] = useState<"idle" | "correct" | "wrong">("idle");
+	const [showHint, setShowHint] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	/**
-	 * Reset everything when a new character is loaded
-	 */
 	useEffect(() => {
 		inputRef.current?.focus();
-
-		setAnswer("");
-		setHintType("verify");
-		setHintText("Press Enter to verify");
-		setIsError(false);
-		setIsSuccess(false);
+		return () => {
+			if (timerRef.current !== null) clearTimeout(timerRef.current);
+		};
 	}, []);
 
-	/**
-	 * Reveal romaji hint
-	 */
-	const revealHint = () => {
-		if (!currentItem) return;
+	function checkAnswer(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		if (!normalizeAnswer(answer) || feedback === "correct") return;
 
-		setHintType("hint");
-		setHintText(`Hint: ${currentItem.romaji}`);
-	};
-
-	/**
-	 * Validate user's answer
-	 */
-	const checkAnswer = () => {
-		if (!currentItem || !answer.trim()) return;
-
-		const userAnswer = answer.trim().toLowerCase();
-		const correctAnswer = currentItem.romaji.toLowerCase();
-
-		if (userAnswer === correctAnswer) {
-			const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
-
-			setHintType("success");
-			setHintText(randomPhrase);
-			setIsSuccess(true);
-			setAnswer("");
-
-			setTimeout(() => {
-				setIsSuccess(false);
-				onCorrect(); // This will trigger new currentItem → reset
-			}, 650);
+		if (normalizeAnswer(answer) === normalizeAnswer(currentItem.romaji)) {
+			setFeedback("correct");
+			timerRef.current = setTimeout(onCorrect, 550);
 		} else {
-			setIsError(true);
-			setHintType("error");
-			setHintText("Try again");
+			setFeedback("wrong");
+			onWrong();
 			setAnswer("");
-
-			setTimeout(() => {
-				setIsError(false);
-				setHintType("verify");
-				setHintText("Press Enter to verify");
-			}, 900);
+			inputRef.current?.focus();
 		}
-	};
-
-	/**
-	 * Keyboard shortcuts
-	 */
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter") {
-			checkAnswer();
-		} else if (e.key === "Tab") {
-			e.preventDefault();
-			revealHint();
-		}
-	};
+	}
 
 	return (
-		<div className="flex flex-col items-center mx-auto w-full max-w-md">
-			<input
-				ref={inputRef}
-				type="text"
-				value={answer}
-				onChange={(e) => setAnswer(e.target.value)}
-				onKeyDown={handleKeyDown}
-				className={`w-full outline-none focus-visible:ring-0 text-center text-3xl py-5 border-b-5 transition-all duration-200 focus:outline-none
-					${isError ? "border-destructive" : isSuccess ? "border-chart-1" : "border-gray-300 focus:accent"}`}
-				placeholder="romaji..."
-				autoComplete="off"
-				spellCheck={false}
-			/>
-
-			{/* Hint / Feedback Area */}
-			<div className="flex flex-col items-center gap-1 mt-5 h-12 text-gray-500 text-sm">
-				{/* Main hint text */}
-				<div className="text-muted-foreground text-sm">
-					{hintType === "verify" && (
-						<>
-							Press <Kbd>Enter</Kbd> to verify
-						</>
-					)}
-
-					{hintType === "success" && hintText}
-					{hintType === "error" && hintText}
-					{hintType === "hint" && hintText}
+		<div className="answer-area">
+			<form onSubmit={checkAnswer} className="answer-form">
+				<label htmlFor="romaji-answer" className="answer-label">
+					Your answer <span>· ROMAJI</span>
+				</label>
+				<div
+					className={`answer-control ${feedback === "wrong" ? "answer-wrong" : ""} ${feedback === "correct" ? "answer-correct" : ""}`}
+				>
+					<input
+						id="romaji-answer"
+						ref={inputRef}
+						type="text"
+						value={answer}
+						onChange={(event) => {
+							setAnswer(event.target.value);
+							if (feedback === "wrong") setFeedback("idle");
+						}}
+						placeholder="Type the reading…"
+						autoComplete="off"
+						spellCheck={false}
+						autoCapitalize="off"
+						aria-describedby="answer-feedback"
+						disabled={feedback === "correct"}
+					/>
+					<Button type="submit" disabled={!answer.trim() || feedback === "correct"}>
+						Check <ArrowRight aria-hidden="true" size={16} />
+					</Button>
 				</div>
-
-				{/* Tab hint instruction - always visible when in verify mode */}
-				{hintType === "verify" && (
-					<div className="text-muted-foreground text-xs">
-						Press <Kbd>Tab</Kbd> to reveal hint
-					</div>
-				)}
+			</form>
+			<div className="answer-meta">
+				<output id="answer-feedback" aria-live="polite">
+					{feedback === "correct"
+						? "Correct! On to the next character."
+						: feedback === "wrong"
+							? "Not quite — try again."
+							: showHint
+								? `Reading: ${currentItem.romaji}${currentItem.type === "kanji" ? ` · ${currentItem.meaning}` : ""}`
+								: "Press Enter to check your answer."}
+				</output>
+				<div className="answer-actions">
+					<Button
+						type="button"
+						size="sm"
+						variant="ghost"
+						onClick={() => {
+							setShowHint(true);
+							setFeedback("idle");
+						}}
+						disabled={feedback === "correct"}
+					>
+						<Eye aria-hidden="true" size={16} /> Hint
+					</Button>
+					<Button
+						type="button"
+						size="sm"
+						variant="ghost"
+						onClick={onSkip}
+						disabled={feedback === "correct"}
+					>
+						<SkipForward aria-hidden="true" size={16} /> Skip
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

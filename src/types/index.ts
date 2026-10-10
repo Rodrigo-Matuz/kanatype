@@ -21,15 +21,3 @@ export interface KanjiItem extends BaseJapaneseItem {
 
 // Any supported learning item in the application
 export type JapaneseItem = KanaItem | KanjiItem;
-
-// Methods exposed by Display component through React refs
-export interface DisplayHandle {
-	// Advances to the next learning item
-	next: () => void;
-}
-
-// Props for Display component
-export interface DisplayProps {
-	// Fired whenever displayed item changes
-	onChange?: (item: JapaneseItem) => void;
-}

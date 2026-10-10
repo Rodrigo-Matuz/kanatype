@@ -26,7 +26,7 @@ export function CharacterSection({ title, items }: Props) {
 		<section>
 			<SectionHeader title={title} />
 
-			<div className="gap-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+			<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6">
 				{items.map((item) => {
 					// Generate stable unique keys to help React reconciliation
 					const uniqueKey =

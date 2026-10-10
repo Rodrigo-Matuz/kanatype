@@ -1,62 +1,55 @@
 import "@/App.css";
 
 import { ExternalLink } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Display from "@/components/Display";
 import Header from "@/components/Header";
 import Input from "@/components/Input";
+import { getDataByTypes } from "@/data";
+import { pickNext } from "@/lib/practice";
 import TablePage from "@/pages/Table";
-import type { DisplayHandle, ScriptType } from "@/types";
+import type { JapaneseItem, ScriptType } from "@/types";
 
-/**
- * Main application component
- *
- * Responsibilities:
- * - Manage active script types (Hiragana, Katakana, Kanji)
- * - Coordinate between Header, Display, and Input
- * - Handle routing between learning mode and table view
- */
+const allScripts: ScriptType[] = ["hiragana", "katakana", "kanji"];
+
 export default function App() {
 	const navigate = useNavigate();
-
 	const [activeScripts, setActiveScripts] = useState<ScriptType[]>(["hiragana"]);
-	const [currentItem, setCurrentItem] = useState<any>(null);
+	const [currentItem, setCurrentItem] = useState<JapaneseItem>(() =>
+		pickNext(getDataByTypes(["hiragana"]), null),
+	);
+	const [completed, setCompleted] = useState(0);
+	const [streak, setStreak] = useState(0);
 
-	const displayRef = useRef<DisplayHandle>(null);
+	function chooseScripts(scripts: ScriptType[]) {
+		setActiveScripts(scripts);
+		setCurrentItem((previous) => pickNext(getDataByTypes(scripts), previous));
+	}
 
-	// Load first item on initial mount
-	useEffect(() => {
-		displayRef.current?.next();
-	}, []);
-
-	const handleNavigate = () => navigate("/table");
-
-	/**
-	 * Toggle a script type (with safeguard: at least one must remain active)
-	 */
 	function toggleScript(script: ScriptType) {
-		setActiveScripts((prev) => {
-			if (prev.includes(script)) {
-				if (prev.length === 1) return prev; // Prevent disabling all
-				return prev.filter((s) => s !== script);
+		if (activeScripts.includes(script)) {
+			if (activeScripts.length > 1) {
+				chooseScripts(activeScripts.filter((value) => value !== script));
 			}
-			return [...prev, script];
-		});
+			return;
+		}
+		chooseScripts([...activeScripts, script]);
 	}
 
-	/**
-	 * Enable all script types
-	 */
-	function selectAll() {
-		setActiveScripts(["hiragana", "katakana", "kanji"]);
+	function advance() {
+		setCurrentItem((previous) => pickNext(getDataByTypes(activeScripts), previous));
 	}
 
-	/**
-	 * Advance to next character when user answers correctly
-	 */
-	function handleCorrectAnswer() {
-		displayRef.current?.next();
+	function handleCorrect() {
+		setCompleted((value) => value + 1);
+		setStreak((value) => value + 1);
+		advance();
+	}
+
+	function handleSkip() {
+		setStreak(0);
+		advance();
 	}
 
 	return (
@@ -64,55 +57,52 @@ export default function App() {
 			<Route
 				path="/"
 				element={
-					<div className="flex flex-col w-full h-screen">
+					<div className="app-shell">
 						<Header
+							mode="practice"
 							activeScripts={activeScripts}
 							onToggle={toggleScript}
-							onSelectAll={selectAll}
-							onNavigate={handleNavigate}
-							currentView="learn"
+							onSelectAll={() => chooseScripts(allScripts)}
+							onNavigate={() => navigate("/table")}
 						/>
-
-						<div className="flex flex-col flex-1 justify-start items-center pt-40">
-							<Display
-								key={activeScripts.sort().join(",")} // Important: Forces remount when scripts change
-								ref={displayRef}
-								scriptTypes={activeScripts}
-								onChange={setCurrentItem}
-							/>
-
-							<Input currentItem={currentItem} onCorrect={handleCorrectAnswer} />
-						</div>
-
-						{/* Bottom Footer */}
-						<footer className="mt-auto py-6 border-border border-t text-muted-foreground text-sm text-center">
-							<div className="flex flex-wrap justify-center items-center gap-3">
-								<span>
-								Made with <span className="text-accent">♥</span> by
-								</span>
-
-								<a
-									href="https://github.com/Rodrigo-Matuz"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-flex items-center gap-1 hover:text-accent underline underline-offset-4 transition-colors"
-								>
-									<ExternalLink className="w-4 h-4" />
-									Rodrigo-Matuz
-								</a>
-
-								<span>•</span>
-
-								<a
-									href="https://github.com/Rodrigo-Matuz/kanatype"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-flex items-center gap-1 hover:text-accent underline underline-offset-4 transition-colors"
-								>
-									<ExternalLink className="w-4 h-4" />
-									View on GitHub
-								</a>
+						<main className="practice-main">
+							<div className="practice-intro">
+								<p className="eyebrow">JAPANESE TYPING PRACTICE / 01</p>
+								<h1>Learn one character at a time.</h1>
+								<p>Read the character, type its romaji, and build your rhythm.</p>
 							</div>
+							<div className="practice-card">
+								<div className="practice-card-top">
+									<span>{currentItem.type.toUpperCase()}</span>
+									<span>READ · TYPE · REMEMBER</span>
+								</div>
+								<Display item={currentItem} />
+								<Input
+									key={`${currentItem.type}-${currentItem.type === "kanji" ? currentItem.kanji : currentItem.kana}`}
+									currentItem={currentItem}
+									onCorrect={handleCorrect}
+									onSkip={handleSkip}
+									onWrong={() => setStreak(0)}
+								/>
+							</div>
+							<section className="practice-stats" aria-label="Practice progress">
+								<span>
+									<strong>{completed}</strong> answered
+								</span>
+								<span>
+									<strong>{streak}</strong> in a row
+								</span>
+							</section>
+						</main>
+						<footer className="app-footer">
+							<span>KanataType · Practice makes familiar.</span>
+							<a
+								href="https://github.com/Rodrigo-Matuz/kanatype"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								Project on GitHub <ExternalLink aria-hidden="true" size={14} />
+							</a>
 						</footer>
 					</div>
 				}

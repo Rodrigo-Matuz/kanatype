@@ -10,29 +10,29 @@ export const getDataByTypes = (types: ScriptType[]): JapaneseItem[] => {
 
 	if (types.includes("hiragana")) {
 		result.push(
-			...hiragana.map(item => ({
+			...hiragana.map((item) => ({
 				...item,
 				type: "hiragana" as const,
-			}))
+			})),
 		);
 	}
 
 	if (types.includes("katakana")) {
 		result.push(
-			...katakana.map(item => ({
+			...katakana.map((item) => ({
 				...item,
-				type: "katakana" as const
-			}))
-		)
+				type: "katakana" as const,
+			})),
+		);
 	}
 
 	if (types.includes("kanji")) {
 		result.push(
-			...kanji.map(item => ({
-				...item, 
-				type: "kanji" as const
-			}))
-		)
+			...kanji.map((item) => ({
+				...item,
+				type: "kanji" as const,
+			})),
+		);
 	}
 
 	return result;

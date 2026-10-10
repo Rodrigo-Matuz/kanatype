@@ -1,119 +1,130 @@
-import { Layers, Moon, Sun, Table } from "lucide-react";
+import { isTauri } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { ArrowLeft, BookOpen, Layers3, Maximize2, Minus, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import type { ScriptType } from "@/types";
 
-/**
- * Available script filter buttons shown in the header.
- *
- * This is UI configuration, not business logic.
- * (keeps rendering separate from app state logic)
- */
 const scriptOptions: { key: ScriptType; label: string }[] = [
 	{ key: "hiragana", label: "Hiragana" },
 	{ key: "katakana", label: "Katakana" },
 	{ key: "kanji", label: "Kanji" },
 ];
 
-type HeaderProps = {
-	/**
-	 * Currently active script filters
-	 * Used to visually highlight selected buttons
-	 */
-	activeScripts: ScriptType[];
+type HeaderProps =
+	| {
+			mode: "practice";
+			activeScripts: ScriptType[];
+			onToggle: (script: ScriptType) => void;
+			onSelectAll: () => void;
+			onNavigate: () => void;
+	  }
+	| { mode: "table"; onNavigate: () => void };
 
-	/**
-	 * Toggle a single script on/off
-	 */
-	onToggle: (script: ScriptType) => void;
-
-	/**
-	 * Enable all scripts at once
-	 */
-	onSelectAll: () => void;
-
-	/**
-	 * Navigate to another view (e.g. table/reference screen)
-	 */
-	onNavigate: () => void;
-
-	currentView: "learn" | "table";
-};
-
-/**
- * Header component
- *
- * Responsibilities:
- * - Script filtering controls
- * - Navigation entry point
- * - Theme switching
- *
- * NOTE: This is a "control header", not just UI decoration.
- */
-export default function Header({ activeScripts, onToggle, onSelectAll, onNavigate, currentView }: HeaderProps) {
-	const { theme, setTheme } = useTheme();
-
-	/**
-	 * Toggle between dark and light theme
-	 *
-	 * Uses current theme state from next-themes
-	 */
-	const toggleTheme = () => {
-		setTheme(theme === "dark" ? "light" : "dark");
-	};
+export default function Header(props: HeaderProps) {
+	const { resolvedTheme, setTheme } = useTheme();
+	const isDark = resolvedTheme === "dark";
+	const nativeWindow = isTauri() ? getCurrentWindow() : null;
 
 	return (
-		<header className="flex justify-between items-center bg-background p-5 w-full">
-			{/* Left side: script filters */}
-			<div className="flex gap-2">
-				{scriptOptions.map(({ key, label }) => (
+		<header className="app-header">
+			<div
+				className={nativeWindow ? "header-leading draggable" : "header-leading"}
+				data-tauri-drag-region
+			>
+				<span className="brand-mark" aria-hidden="true" data-tauri-drag-region>
+					カ
+				</span>
+				<div className="brand-copy" data-tauri-drag-region>
+					<strong data-tauri-drag-region>KanataType</strong>
+					<span data-tauri-drag-region>YOUR JAPANESE PRACTICE SPACE</span>
+				</div>
+			</div>
+
+			{props.mode === "practice" ? (
+				<fieldset className="script-switcher">
+					<legend className="sr-only">Practice scripts</legend>
+					{scriptOptions.map(({ key, label }) => (
+						<Button
+							key={key}
+							type="button"
+							variant={props.activeScripts.includes(key) ? "default" : "outline"}
+							aria-pressed={props.activeScripts.includes(key)}
+							onClick={() => props.onToggle(key)}
+							size="sm"
+						>
+							{label}
+						</Button>
+					))}
 					<Button
-						key={key}
-						/**
-						 * Active scripts are visually highlighted
-						 * inactive ones are outlined
-						 */
-						variant={activeScripts.includes(key) ? "default" : "outline"}
-						onClick={() => onToggle(key)}
-						size="lg"
+						type="button"
+						variant="ghost"
+						size="sm"
+						onClick={props.onSelectAll}
+						aria-label="Practice all scripts"
 					>
-						{label}
+						<Layers3 aria-hidden="true" size={16} /> All
 					</Button>
-				))}
+				</fieldset>
+			) : (
+				<span className="header-section-label">CHARACTER REFERENCE</span>
+			)}
 
-				{/* Quick enable all scripts */}
-				<Button variant="ghost" onClick={onSelectAll} size="lg">
-					<Layers className="mr-2 w-4 h-4" />
-					All
+			<nav className="header-actions" aria-label="App navigation">
+				<Button type="button" variant="outline" size="sm" onClick={props.onNavigate}>
+					{props.mode === "table" ? (
+						<ArrowLeft aria-hidden="true" size={16} />
+					) : (
+						<BookOpen aria-hidden="true" size={16} />
+					)}
+					{props.mode === "table" ? "Practice" : "Reference"}
 				</Button>
-			</div>
-
-			{/* Right side: navigation + settings */}
-			<div className="flex gap-2">
-				{/* Switch to table/reference view */}
-				<Button type="button" onClick={onNavigate} size="lg">
-					<Table className="mr-2 w-4 h-4" />
-					{currentView === "table" ? "Back" : "View Table"}
+				<Button
+					type="button"
+					variant="outline"
+					size="icon-sm"
+					onClick={() => setTheme(isDark ? "light" : "dark")}
+					aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+				>
+					{isDark ? (
+						<Sun aria-hidden="true" size={18} />
+					) : (
+						<Moon aria-hidden="true" size={18} />
+					)}
 				</Button>
-
-				{/* Theme switcher */}
-				<Button size="lg" onClick={toggleTheme} className="relative px-5">
-					<Sun
-						className={`absolute transition-all duration-300 w-5 h-5
-							${theme === "dark"
-								? "opacity-0 rotate-90 scale-0"
-								: "opacity-100 rotate-0 scale-100"
-							}`}
-					/>
-					<Moon
-						className={`absolute transition-all duration-300 w-5 h-5
-							${theme === "dark"
-								? "opacity-100 rotate-0 scale-100"
-								: "opacity-0 -rotate-90 scale-0"
-							}`}
-					/>
-				</Button>
-			</div>
+				{nativeWindow && (
+					<fieldset className="window-controls">
+						<legend className="sr-only">Window controls</legend>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-sm"
+							aria-label="Minimize window"
+							onClick={() => void nativeWindow.minimize()}
+						>
+							<Minus aria-hidden="true" size={16} />
+						</Button>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-sm"
+							aria-label="Toggle maximize"
+							onClick={() => void nativeWindow.toggleMaximize()}
+						>
+							<Maximize2 aria-hidden="true" size={16} />
+						</Button>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-sm"
+							aria-label="Close window"
+							onClick={() => void nativeWindow.close()}
+						>
+							<X aria-hidden="true" size={16} />
+						</Button>
+					</fieldset>
+				)}
+			</nav>
 		</header>
 	);
 }

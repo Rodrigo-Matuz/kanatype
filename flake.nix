@@ -1,5 +1,5 @@
 {
-  description = "Kanatype — NixOS and Home Manager installation";
+  description = "KanataType — NixOS and Home Manager installation";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -39,10 +39,15 @@
           install -Dm755 usr/bin/kanatype "$out/bin/kanatype"
           mkdir -p "$out/share"
           cp -r usr/share/. "$out/share/"
+          # The pinned 1.0.0 .deb still contains the old launcher metadata.
+          substituteInPlace "$out/share/applications/kanatype.desktop" \
+            --replace-fail 'Name=kanatype' 'Name=KanataType' \
+            --replace-fail 'Comment=A Tauri App' 'Comment=Practice Japanese kana and kanji with instant feedback' \
+            --replace-fail 'Categories=' 'Categories=Education;Languages;'
           runHook postInstall
         '';
         meta = {
-          description = "Desktop app for learning Japanese kana and kanji";
+          description = "Practice Japanese kana and kanji with instant feedback";
           homepage = "https://github.com/Rodrigo-Matuz/kanatype";
           license = lib.licenses.mit;
           mainProgram = "kanatype";
@@ -59,11 +64,11 @@
         in
         {
           options.programs.kanatype = {
-            enable = lib.mkEnableOption "Kanatype";
+            enable = lib.mkEnableOption "KanataType";
             package = lib.mkOption {
               type = lib.types.package;
               default = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
-              description = "Kanatype package to install.";
+              description = "KanataType package to install.";
             };
           };
           config = lib.mkIf cfg.enable {

@@ -26,6 +26,14 @@
 		"lineWidth": 100,
 		"lineEnding": "lf"
 	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		},
+		"formatter": {
+			"enabled": false
+		}
+	},
 	"files": {
 		"maxSize": 2097152
 	},
