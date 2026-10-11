@@ -65,12 +65,10 @@ Then apply your usual Home Manager or NixOS configuration. The package installs
 `kanatype` and a desktop launcher. Alternatively, install just the package with
 `nix profile install github:Rodrigo-Matuz/kanatype` (do not install it both ways).
 
-The flake currently packages the **1.0.0** Linux `.deb` release for x86_64;
-it relabels the launcher as KanataType with the new description, but the app
-inside is still the 1.0.0 build. The interface changes in this repository will
-only reach Nix users after a new release is built and the version and verified
-hash in `flake.nix` are updated. The flake is not a build of your local working
-tree.
+The flake packages the published **1.1.0** Linux `.deb` for x86_64, including
+this release's interface and desktop metadata. It fetches a pinned release
+artifact, not a build of your local working tree. To receive a newer release,
+update the flake input after its version and verified asset hash are updated.
 
 ### Build from Source
 

@@ -8,14 +8,15 @@
       system = "x86_64-linux"; # The published .deb is amd64-only.
       pkgs = nixpkgs.legacyPackages.${system};
       lib = nixpkgs.lib;
-      version = "1.0.0";
+      version = "1.1.0";
+      releaseTag = "v${version}";
       # Package the published native .deb instead of building Tauri, Rust, and
       # frontend dependencies from source. Re-link it against Nixpkgs' GTK and
       # WebKitGTK libraries rather than relying on an AppImage's bundled stack.
-      # Update version, release tag/asset name, and hash for future releases.
+      # Update version, literal release tag/asset name, and verified hash for future releases.
       deb = pkgs.fetchurl {
-        url = "https://github.com/Rodrigo-Matuz/kanatype/releases/download/${version}/kanatype_${version}_amd64.deb";
-        hash = "sha256-66LQpfrim/4yIBCoYDJkOGvZQxnKtQRyIOVHzn5F3fE=";
+        url = "https://github.com/Rodrigo-Matuz/kanatype/releases/download/${releaseTag}/kanatype_${version}_amd64.deb";
+        hash = "sha256-iJYk9dYQpeZZmRuV1ZpBxTGSXEy3f+PXzAdXoK8tK74=";
       };
       package = pkgs.stdenv.mkDerivation {
         pname = "kanatype";
@@ -39,11 +40,7 @@
           install -Dm755 usr/bin/kanatype "$out/bin/kanatype"
           mkdir -p "$out/share"
           cp -r usr/share/. "$out/share/"
-          # The pinned 1.0.0 .deb still contains the old launcher metadata.
-          substituteInPlace "$out/share/applications/kanatype.desktop" \
-            --replace-fail 'Name=kanatype' 'Name=KanataType' \
-            --replace-fail 'Comment=A Tauri App' 'Comment=Practice Japanese kana and kanji with instant feedback' \
-            --replace-fail 'Categories=' 'Categories=Education;Languages;'
+          # The 1.1.0 .deb already ships the branded desktop entry.
           runHook postInstall
         '';
         meta = {
