@@ -15,9 +15,20 @@ export interface KanaItem extends BaseJapaneseItem {
 // Kanji item
 export interface KanjiItem extends BaseJapaneseItem {
 	type: "kanji";
+	question: "reading";
 	kanji: string; // Kanji character (e.g. "猫")
 	meaning: string; // English meaning of the kanji
 }
 
+export interface MeaningKanjiItem {
+	type: "kanji";
+	question: "meaning";
+	kanji: string;
+	jlptLevel: import("@/lib/jlpt/filter").JLPTLevel;
+	meanings: readonly string[];
+	onReadings: readonly string[];
+	kunReadings: readonly string[];
+}
+
 // Any supported learning item in the application
-export type JapaneseItem = KanaItem | KanjiItem;
+export type JapaneseItem = KanaItem | KanjiItem | MeaningKanjiItem;

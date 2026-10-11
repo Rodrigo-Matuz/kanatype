@@ -1,6 +1,7 @@
 import { ArrowRight, Eye, SkipForward } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { isCorrectAnswer } from "@/lib/jlpt/answers";
 import { normalizeAnswer } from "@/lib/practice";
 import type { JapaneseItem } from "@/types";
 
@@ -12,6 +13,11 @@ type Props = {
 };
 
 export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props) {
+	const meaningQuestion = currentItem.type === "kanji" && currentItem.question === "meaning";
+	const hint =
+		currentItem.type === "kanji" && currentItem.question === "meaning"
+			? `Meanings: ${currentItem.meanings.join(", ")}`
+			: `Reading: ${currentItem.romaji}${currentItem.type === "kanji" ? ` · ${currentItem.meaning}` : ""}`;
 	const [answer, setAnswer] = useState("");
 	const [feedback, setFeedback] = useState<"idle" | "correct" | "wrong">("idle");
 	const [showHint, setShowHint] = useState(false);
@@ -26,7 +32,7 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 		event.preventDefault();
 		if (!normalizeAnswer(answer) || answered.current) return;
 
-		if (normalizeAnswer(answer) === normalizeAnswer(currentItem.romaji)) {
+		if (isCorrectAnswer(answer, currentItem)) {
 			answered.current = true;
 			setFeedback("correct");
 			onCorrect();
@@ -42,7 +48,7 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 		<div className="answer-area">
 			<form onSubmit={checkAnswer} className="answer-form">
 				<label htmlFor="romaji-answer" className="answer-label">
-					Your answer <span>· ROMAJI</span>
+					Your answer <span>· {meaningQuestion ? "ENGLISH MEANING" : "ROMAJI"}</span>
 				</label>
 				<div
 					className={`answer-control ${feedback === "wrong" ? "answer-wrong" : ""} ${feedback === "correct" ? "answer-correct" : ""}`}
@@ -56,7 +62,9 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 							setAnswer(event.target.value);
 							if (feedback === "wrong") setFeedback("idle");
 						}}
-						placeholder="Type the reading…"
+						placeholder={
+							meaningQuestion ? "Type a dictionary meaning…" : "Type the reading…"
+						}
 						autoComplete="off"
 						spellCheck={false}
 						autoCapitalize="off"
@@ -75,7 +83,7 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 						: feedback === "wrong"
 							? "Not quite — try again."
 							: showHint
-								? `Reading: ${currentItem.romaji}${currentItem.type === "kanji" ? ` · ${currentItem.meaning}` : ""}`
+								? hint
 								: "Press Enter to check your answer."}
 				</output>
 				<div className="answer-actions">

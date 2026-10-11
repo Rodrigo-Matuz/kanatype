@@ -9,11 +9,17 @@ export function CharacterCard({ item }: { item: JapaneseItem }) {
 				{character}
 			</div>
 
-			<div className="font-medium text-foreground text-sm">{item.romaji}</div>
+			<div className="font-medium text-foreground text-sm">
+				{item.type === "kanji" && item.question === "meaning"
+					? [...item.onReadings, ...item.kunReadings].join(" · ")
+					: item.romaji}
+			</div>
 
 			{item.type === "kanji" && (
 				<div className="mt-2 text-muted-foreground text-xs leading-snug">
-					{item.meaning}
+					{item.question === "meaning"
+						? `N${item.jlptLevel} · ${item.meanings.join(", ")}`
+						: item.meaning}
 				</div>
 			)}
 		</div>

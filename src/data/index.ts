@@ -31,6 +31,7 @@ export const getDataByTypes = (types: ScriptType[]): JapaneseItem[] => {
 			...kanji.map((item) => ({
 				...item,
 				type: "kanji" as const,
+				question: "reading" as const,
 			})),
 		);
 	}

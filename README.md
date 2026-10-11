@@ -16,8 +16,9 @@ Built with **Tauri** for a lightweight, native-feeling experience.
 
 - **Multiple Script Modes**: Practice Hiragana, Katakana, Kanji — individually or combined
 - **Smart Filtering**: Toggle any combination of scripts (always at least one active)
-- **Interactive Learning**: Type the reading, reveal a hint, or skip to the next character; practice counts and streaks update as you go
-- **Reference Table**: Search kana and kanji by character, romaji, or meaning
+- **Interactive Learning**: Type a romaji reading for kana or the curated kanji prompts; choose JLPT-aligned kanji mode to type an English dictionary meaning. Hints, skips, counts, and streaks work in both modes
+- **Level Selection**: Practice N5 through N1 kanji by introduction level or cumulatively (for example, Through N3 includes N5 + N4 + N3); kana toggles remain independent
+- **Reference Table**: Search the full kana and kanji library by character, reading, meaning, or N-level; progressively show more results
 - **Dark/Light Theme**: Built-in theme switcher that follows the system by default
 - **Responsive UI**: Keyboard-accessible React + TypeScript interface
 
@@ -154,6 +155,12 @@ For detailed information about the current datasets and how to customize them, s
 
 This document includes explanations about small characters, yōon combinations, design decisions, and instructions for adding or removing characters.
 
+### JLPT-aligned kanji curriculum (on `main`)
+
+An offline, generated **unofficial** kanji study corpus is available at `src/data/jlpt/curriculum.json`. Its 2,211 entries are grouped as N5 (79), N4 (166), N3 (367), N2 (367), and N1 (1,232). Regenerate it from the pinned bundled sources with `bun scripts/generate-jlpt.ts`. See [data sources, checksums, transformations and attribution](docs/DATA_SOURCES.md) and the [implementation plan](docs/JLPT_PLAN.md).
+
+Select Kanji, then choose **JLPT-aligned meanings**, a level, and **Through N…** or **N… only**. The full 2,211-entry set uses typed English dictionary glosses; it does **not** claim to teach every character's reading in context. The existing 140 curated romaji questions remain a separate mode. The [JLPT does not publish an official post-2010 kanji list](https://www.jlpt.jp/e/faq/index.html#anchor28); these levels are approximate study groupings, not exam requirements or a measure of readiness. The already-published 1.1.0 installers still predate this work; the release-pinned Nix package also remains on 1.1.0.
+
 ---
 
 ## TODO
@@ -169,7 +176,7 @@ This document includes explanations about small characters, yōon combinations, 
 Contributions are welcome! Feel free to open issues or submit pull requests for:
 
 - New features
-- Additional Kanji levels / JLPT support
+- Contextual, editorially reviewed kanji reading and vocabulary prompts
 - Bug fixes
 - UI/UX improvements
 - Translations
@@ -192,4 +199,4 @@ Made with ❤️ by [Rodrigo Matuz](https://matuz.me)
 
 ---
 
-**License**: MIT
+**License**: [MIT](LICENSE) for application code. Bundled KANJIDIC2-derived curriculum metadata is adapted under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), with separate upstream attribution and Tanos/KanjiAPI level-list credits in [Data Sources](docs/DATA_SOURCES.md). The MIT code licence does not cover that adapted metadata.

@@ -217,6 +217,11 @@
 .app-header button { border-radius: 0; height: 32px; }
 .practice-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 28px 20px; }
 .practice-intro { width: min(100%, 660px); }
+.level-controls { width: min(100%, 660px); display: flex; flex-wrap: wrap; gap: 10px 16px; padding: 14px; border: 1px solid var(--border); background: var(--card); }
+.level-controls label { display: flex; flex: 1 1 150px; flex-direction: column; gap: 5px; color: var(--muted-foreground); font-size: 11px; font-weight: 700; }
+.level-controls select { width: 100%; min-height: 36px; border: 1px solid var(--border); border-radius: 0; padding: 6px; background: var(--background); color: var(--foreground); font: inherit; font-size: 12px; }
+.level-controls select:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.level-controls p { width: 100%; color: var(--muted-foreground); font-size: 11px; line-height: 1.5; }
 .practice-intro h1, .reference-intro h1 { font-size: clamp(23px, 3vw, 32px); font-weight: 800; letter-spacing: -0.065em; line-height: 1.2; }
 .practice-intro > p:last-child, .reference-intro p:last-child { margin-top: 6px; color: var(--muted-foreground); font-size: 13px; }
 .eyebrow { margin-bottom: 8px; color: var(--primary); }
@@ -245,6 +250,12 @@
 .app-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 12px clamp(20px, 4vw, 48px); border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 11px; }
 .app-footer a { display: inline-flex; align-items: center; gap: 6px; color: var(--foreground); }
 .app-footer a:hover { color: var(--primary); }
+.load-kanji { display: block; width: 100%; min-height: 40px; margin: 20px 0; border: 1px solid var(--border); color: var(--foreground); background: var(--card); cursor: pointer; font-weight: 700; }
+.load-kanji:hover, .load-kanji:focus-visible { border-color: var(--primary); }
+.data-sources { margin-top: 32px; padding: 16px; border: 1px solid var(--border); color: var(--muted-foreground); font-size: 12px; line-height: 1.6; }
+.data-sources summary { cursor: pointer; color: var(--foreground); font-weight: 700; }
+.data-sources p { margin-top: 12px; }
+.data-sources a { color: var(--primary); text-decoration: underline; }
 .reference-main { width: min(100%, 1120px); margin: 0 auto; padding: clamp(22px, 4vw, 48px); }
 .reference-intro { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; }
 .result-count { color: var(--muted-foreground); font-size: 12px; }

@@ -73,3 +73,11 @@ You are completely free to modify this dataset according to your needs.
 Feel free to add any missing characters or remove anything you don’t need.  
 
 > The current selection reflects my personal decisions on what provides the best balance between completeness and simplicity for most learners and developers. Some items were included for high practical usage, while others were excluded to keep the JSON clean and beginner-friendly.
+
+---
+
+## Kanji datasets
+
+`kanji.json` contains the legacy 140 curated romaji reading prompts. The separate `jlpt/curriculum.json` contains 2,211 generated, unofficial JLPT-aligned kanji records used for **English-meaning recognition** and the searchable reference—not automatically generated romaji answer keys. Select Kanji → JLPT-aligned meanings to choose N5–N1 and cumulative or exact-level practice. The bundled source files are under `../../data/sources/`; regenerate the metadata with `bun scripts/generate-jlpt.ts` from the repository root.
+
+**Rights differ from the kana data:** the KANJIDIC2-derived kanji metadata is adapted from EDRDG under CC BY-SA 4.0, with additional KanjiAPI/Tanos source credits. Read [Data Sources, licence terms, and attribution](../../docs/DATA_SOURCES.md) before editing or redistributing the generated curriculum. The application code's MIT licence does not replace those data rights.
