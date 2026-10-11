@@ -1,0 +1,9 @@
+[Desktop Entry]
+Categories=Education;
+Comment=Practice Japanese kana and kanji with instant feedback
+Exec={{exec}}
+StartupWMClass=kanatype
+Icon={{icon}}
+Name=KanataType
+Terminal=false
+Type=Application

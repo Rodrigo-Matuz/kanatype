@@ -1,0 +1,108 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - name: Check matching release versions and notes
+        run: |
+          bun -e '
+            const fs = require("fs");
+            const tag = process.env.GITHUB_REF_NAME;
+            const version = tag.slice(1);
+            const npm = require("./package.json").version;
+            const tauri = require("./src-tauri/tauri.conf.json").version;
+            const cargo = fs.readFileSync("src-tauri/Cargo.toml", "utf8").match(/^version = "([^"]+)"/m)?.[1];
+            const notes = fs.readFileSync("RELEASE.md", "utf8");
+            if (!/^v\d+\.\d+\.\d+$/.test(tag) ||
+                [npm, tauri, cargo].some((value) => value !== version) ||
+                !notes.startsWith("# KanataType " + version + "\n")) {
+              throw new Error("Tag, manifests and RELEASE.md must agree: " + [tag, npm, tauri, cargo].join(", "));
+            }
+          '
+      - run: bun install --frozen-lockfile
+      - run: bunx @biomejs/biome check src
+      - run: bun test
+      - run: bun run build
+
+  draft:
+    needs: verify
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create draft with RELEASE.md as the release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --verify-tag \
+            --title "KanataType ${GITHUB_REF_NAME#v}" \
+            --notes-file RELEASE.md --draft
+
+  build:
+    needs: draft
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-22.04
+            bundles: deb
+          - platform: windows-latest
+            bundles: msi
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Linux build dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev patchelf
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+      - name: Build native installer and upload to draft
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: KanataType __VERSION__
+          releaseDraft: true
+          uploadUpdaterJson: false
+          tauriScript: bun tauri
+          args: --bundles ${{ matrix.bundles }} --ci
+
+  publish:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require both installers and publish RELEASE.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" --json assets \
+            --jq '.assets | map(.name) | (any(.[]; endswith(".deb")) and any(.[]; endswith(".msi")))' \
+            | { read -r ready; test "$ready" = true; }
+          gh release edit "$GITHUB_REF_NAME" --notes-file RELEASE.md --draft=false

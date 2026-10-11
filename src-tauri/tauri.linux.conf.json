@@ -1,0 +1,10 @@
+{
+  "productName": "kanatype",
+  "bundle": {
+    "linux": {
+      "deb": {
+        "desktopTemplate": "desktop-template.desktop"
+      }
+    }
+  }
+}
