@@ -28,7 +28,7 @@
 	{ "romaji": "otoko", "kanji": "男", "meaning": "man/male" },
 
 	{ "romaji": "oo", "kanji": "大", "meaning": "big/large" },
-	{ "romaji": "chii", "kanji": "小", "meaning": "small/little" },
+	{ "romaji": "shou", "kanji": "小", "meaning": "small/little" },
 	{ "romaji": "naka", "kanji": "中", "meaning": "middle/inside" },
 
 	{ "romaji": "ue", "kanji": "上", "meaning": "up/above" },
@@ -101,16 +101,16 @@
 	{ "romaji": "mei", "kanji": "名", "meaning": "name" },
 	{ "romaji": "ji", "kanji": "字", "meaning": "letter/character" },
 	{ "romaji": "bun", "kanji": "文", "meaning": "sentence/writing" },
-	{ "romaji": "hon", "kanji": "音", "meaning": "sound" },
-	{ "romaji": "ongaku", "kanji": "楽", "meaning": "music/fun" },
+	{ "romaji": "oto", "kanji": "音", "meaning": "sound" },
+	{ "romaji": "raku", "kanji": "楽", "meaning": "music/fun" },
 	{ "romaji": "uta", "kanji": "歌", "meaning": "song" },
 
 	{ "romaji": "eki", "kanji": "駅", "meaning": "station" },
 	{ "romaji": "michi", "kanji": "道", "meaning": "road/way" },
 	{ "romaji": "mon", "kanji": "門", "meaning": "gate" },
-	{ "romaji": "heya", "kanji": "部", "meaning": "section/room" },
-	{ "romaji": "ya", "kanji": "店", "meaning": "shop/store" },
-	{ "romaji": "kaisha", "kanji": "会", "meaning": "meeting/company" },
+	{ "romaji": "bu", "kanji": "部", "meaning": "section/department" },
+	{ "romaji": "mise", "kanji": "店", "meaning": "shop/store" },
+	{ "romaji": "kai", "kanji": "会", "meaning": "meeting/association" },
 	{ "romaji": "sha", "kanji": "社", "meaning": "company/shrine" },
 
 	{ "romaji": "sen", "kanji": "先", "meaning": "previous/ahead" },
@@ -157,10 +157,10 @@
 	{ "romaji": "aka", "kanji": "明", "meaning": "bright/clear" },
 	{ "romaji": "kurai", "kanji": "暗", "meaning": "dark" },
 
-	{ "romaji": "taberu", "kanji": "飯", "meaning": "meal/rice" },
+	{ "romaji": "meshi", "kanji": "飯", "meaning": "meal/rice" },
 	{ "romaji": "cha", "kanji": "茶", "meaning": "tea" },
 	{ "romaji": "niku", "kanji": "肉", "meaning": "meat" },
 	{ "romaji": "tamago", "kanji": "卵", "meaning": "egg" },
-	{ "romaji": "yasai", "kanji": "菜", "meaning": "vegetable" },
+	{ "romaji": "na", "kanji": "菜", "meaning": "vegetable" },
 	{ "romaji": "kome", "kanji": "米", "meaning": "rice" }
 ]

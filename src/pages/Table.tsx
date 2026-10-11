@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CharacterSection } from "@/components/CharacterSection";
 import Header from "@/components/Header";
@@ -12,6 +12,9 @@ export default function TablePage() {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState("");
 	const searchInputRef = useRef<HTMLInputElement>(null);
+	useEffect(() => {
+		searchInputRef.current?.focus();
+	}, []);
 
 	const filteredItems = useMemo(() => {
 		const query = search.toLowerCase().trim();

@@ -16,22 +16,20 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 	const [feedback, setFeedback] = useState<"idle" | "correct" | "wrong">("idle");
 	const [showHint, setShowHint] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const answered = useRef(false);
 
 	useEffect(() => {
 		inputRef.current?.focus();
-		return () => {
-			if (timerRef.current !== null) clearTimeout(timerRef.current);
-		};
 	}, []);
 
 	function checkAnswer(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		if (!normalizeAnswer(answer) || feedback === "correct") return;
+		if (!normalizeAnswer(answer) || answered.current) return;
 
 		if (normalizeAnswer(answer) === normalizeAnswer(currentItem.romaji)) {
+			answered.current = true;
 			setFeedback("correct");
-			timerRef.current = setTimeout(onCorrect, 550);
+			onCorrect();
 		} else {
 			setFeedback("wrong");
 			onWrong();
@@ -88,6 +86,7 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 						onClick={() => {
 							setShowHint(true);
 							setFeedback("idle");
+							inputRef.current?.focus();
 						}}
 						disabled={feedback === "correct"}
 					>

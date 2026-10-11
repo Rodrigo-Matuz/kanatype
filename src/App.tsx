@@ -1,7 +1,7 @@
 import "@/App.css";
 
 import { ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Display from "@/components/Display";
 import Header from "@/components/Header";
@@ -21,8 +21,20 @@ export default function App() {
 	);
 	const [completed, setCompleted] = useState(0);
 	const [streak, setStreak] = useState(0);
+	const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	useEffect(
+		() => () => {
+			if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
+		},
+		[],
+	);
 
 	function chooseScripts(scripts: ScriptType[]) {
+		if (advanceTimer.current !== null) {
+			clearTimeout(advanceTimer.current);
+			advanceTimer.current = null;
+		}
 		setActiveScripts(scripts);
 		setCurrentItem((previous) => pickNext(getDataByTypes(scripts), previous));
 	}
@@ -44,7 +56,11 @@ export default function App() {
 	function handleCorrect() {
 		setCompleted((value) => value + 1);
 		setStreak((value) => value + 1);
-		advance();
+		// Credit the answer now; keep the current prompt briefly for visible feedback.
+		advanceTimer.current = setTimeout(() => {
+			advanceTimer.current = null;
+			advance();
+		}, 550);
 	}
 
 	function handleSkip() {
