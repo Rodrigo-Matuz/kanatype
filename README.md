@@ -66,8 +66,8 @@ Then apply your usual Home Manager or NixOS configuration. The package installs
 `kanatype` and a desktop launcher. Alternatively, install just the package with
 `nix profile install github:Rodrigo-Matuz/kanatype` (do not install it both ways).
 
-The flake packages the published **1.1.0** Linux `.deb` for x86_64, including
-this release's interface and desktop metadata. It fetches a pinned release
+The flake packages the published **1.2.0** Linux `.deb` for x86_64, including
+the offline JLPT-aligned study curriculum. It fetches a pinned release
 artifact, not a build of your local working tree. To receive a newer release,
 update the flake input after its version and verified asset hash are updated.
 
