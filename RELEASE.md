@@ -1,17 +1,17 @@
-# KanataType 1.2.0
+# KanataType 1.3.0
 
-Practice an expanded, offline kanji curriculum with selectable JLPT-aligned study levels. Windows MSI and x86_64 Linux `.deb` installers are attached to this release.
+Practice KanataType in Brazilian Portuguese or English. Windows MSI and x86_64 Linux `.deb` installers are attached to this release.
 
-## What changed since 1.1.0
+## What changed since 1.2.0
 
-- **Five unofficial kanji study levels.** The bundled reference contains 2,211 kanji: N5 (79), N4 (166), N3 (367), N2 (367), and N1 (1,232). These community-sourced sets are **not official JLPT requirements or an exam-readiness guarantee**.
-- **Choose your practice coverage.** Practice kanji from one exact level or cumulatively through a level (for example, “Through N3” includes N5, N4, and N3). The screen shows the number of available prompts. Hiragana and Katakana choices remain independent of the kanji level filter.
-- **Two distinct kanji exercises.** Keep the original 140 curated romaji-reading prompts, or switch to recognition questions that ask for an English meaning from the new curriculum. The meaning exercise accepts documented dictionary glosses, including sensible shortened glosses without a trailing parenthetical qualifier; dictionary readings are **not** treated as uniquely correct isolated-character answers. Existing answer feedback, hints, scoring, and delayed advancement remain available.
-- **Full searchable reference.** Browse all levels regardless of the current practice filter. Search by character, Japanese dictionary reading, English meaning, or level. The app displays on/kun readings and makes the dataset attribution and licensing readable inside the offline application.
-- **Reproducible source data.** The repo includes pinned source snapshots, a deterministic generator, and [data provenance and licence details](https://github.com/Rodrigo-Matuz/kanatype/blob/main/docs/DATA_SOURCES.md). Character meanings and readings are adapted from EDRDG KANJIDIC2 (CC BY-SA 4.0); level assignments are credited to KanjiAPI and Tanos (CC BY, version unspecified). The code and adapted dictionary data have separate licences.
+- **App language selector.** Switch between English and Brazilian Portuguese from practice or the reference. The choice is saved, and interface copy and accessibility labels come from matching JSON catalogs so contributors can add translations.
+- **Portuguese meaning practice.** Questions and accepted meaning answers follow the selected language. The bundled KANJIDIC2 snapshot provides Portuguese glosses for **1,929** of the 2,211 unofficial JLPT-aligned study kanji. The other **282** N1 kanji remain in the reference, marked untranslated; they are not asked as Portuguese meaning questions or graded against English glosses. Existing hiragana, katakana, and 140 curated romaji-reading questions remain available in both languages.
+- **Language-aware reference and search.** Glosses, controls and search results follow the selected language. Portuguese search does not silently match untranslated English meanings; kanji, Japanese readings, level labels and curated romaji remain searchable. Meaning answers and meaning search ignore accents, while romaji grading stays strict.
+- **Safe language changes during practice.** Switching languages reconciles the active question without counting an answer twice or accepting an old-language answer. Credited answers still advance after the normal delay.
+- **Offline, attributed data.** The Portuguese gloss JSON is reproducibly extracted from the pinned EDRDG KANJIDIC2 snapshot. The [source, coverage, adaptation and licensing notes](https://github.com/Rodrigo-Matuz/kanatype/blob/v1.3.0/docs/DATA_SOURCES.md) distinguish the dictionary's CC BY-SA 4.0 data licence from the software's MIT licence. These N5–N1 groups are community study sets, **not official JLPT requirements**.
 
 ## Installation
 
-Download the Windows `.msi` or x86_64 Linux `.deb` below. The executable remains `kanatype`, and existing Windows MSI installations retain the same upgrade identity. Nix/Home Manager installation remains opt-in via `programs.kanatype.enable`; the `main` flake package is repinned to this release after the installers are published and their hashes verified.
+Download the Windows `.msi` or x86_64 Linux `.deb` below. The executable and Windows upgrade identity remain `kanatype`. The Nix/Home Manager flake is opt-in; its release-pinned Linux package is updated on `main` only after the new `.deb` is published and its hash verified. Until then, the flake still installs the 1.2.0 binary.
 
-[Compare v1.1.0 to v1.2.0](https://github.com/Rodrigo-Matuz/kanatype/compare/v1.1.0...v1.2.0).
+[Compare v1.2.0 to v1.3.0](https://github.com/Rodrigo-Matuz/kanatype/compare/v1.2.0...v1.3.0).
