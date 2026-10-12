@@ -67,8 +67,8 @@ Then apply your usual Home Manager or NixOS configuration. The package installs
 `kanatype` and a desktop launcher. Alternatively, install just the package with
 `nix profile install github:Rodrigo-Matuz/kanatype` (do not install it both ways).
 
-The flake packages the published **1.2.0** Linux `.deb` for x86_64, including
-the offline JLPT-aligned study curriculum. It fetches a pinned release
+The flake packages the published **1.3.0** Linux `.deb` for x86_64, including
+the offline JLPT-aligned study curriculum and Brazilian Portuguese. It fetches a pinned release
 artifact, not a build of your local working tree. To receive a newer release,
 update the flake input after its version and verified asset hash are updated.
 
@@ -160,7 +160,7 @@ This document includes explanations about small characters, yōon combinations, 
 
 An offline, generated **unofficial** kanji study corpus is available at `src/data/jlpt/curriculum.json`. Its 2,211 entries are grouped as N5 (79), N4 (166), N3 (367), N2 (367), and N1 (1,232). Regenerate it from the pinned bundled sources with `bun scripts/generate-jlpt.ts`. See [data sources, checksums, transformations and attribution](docs/DATA_SOURCES.md) and the [implementation plan](docs/JLPT_PLAN.md).
 
-Select Kanji, then choose **JLPT-aligned meanings**, a level, and **Through N…** or **N… only**. English mode covers all 2,211 entries. Portuguese mode offers meaning questions for the 1,929 entries with Portuguese KANJIDIC2 glosses (all N5–N2 entries and 950 N1 entries); the other 282 remain browsable in the reference with an untranslated label, not English-only practice questions. Kana and the existing 140 curated romaji-reading questions are unchanged in both languages. Dictionary-meaning answers and searches ignore accents (so `ideia` matches `idéia`), while romaji spelling remains strict. These sets do **not** teach every character's reading in context. The [JLPT does not publish an official post-2010 kanji list](https://www.jlpt.jp/e/faq/index.html#anchor28); these levels are approximate study groupings, not exam requirements or a measure of readiness. The 1.3.0 installers include Portuguese; until the new `.deb` is published and verified, the opt-in Nix flake remains pinned to the older 1.2.0 binary.
+Select Kanji, then choose **JLPT-aligned meanings**, a level, and **Through N…** or **N… only**. English mode covers all 2,211 entries. Portuguese mode offers meaning questions for the 1,929 entries with Portuguese KANJIDIC2 glosses (all N5–N2 entries and 950 N1 entries); the other 282 remain browsable in the reference with an untranslated label, not English-only practice questions. Kana and the existing 140 curated romaji-reading questions are unchanged in both languages. Dictionary-meaning answers and searches ignore accents (so `ideia` matches `idéia`), while romaji spelling remains strict. These sets do **not** teach every character's reading in context. The [JLPT does not publish an official post-2010 kanji list](https://www.jlpt.jp/e/faq/index.html#anchor28); these levels are approximate study groupings, not exam requirements or a measure of readiness. The 1.3.0 installers and the release-pinned opt-in Nix flake include Portuguese.
 
 ### Help translate
 

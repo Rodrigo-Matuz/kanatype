@@ -8,7 +8,7 @@
       system = "x86_64-linux"; # The published .deb is amd64-only.
       pkgs = nixpkgs.legacyPackages.${system};
       lib = nixpkgs.lib;
-      version = "1.2.0";
+      version = "1.3.0";
       releaseTag = "v${version}";
       # Package the published native .deb instead of building Tauri, Rust, and
       # frontend dependencies from source. Re-link it against Nixpkgs' GTK and
@@ -16,7 +16,7 @@
       # Update version, literal release tag/asset name, and verified hash for future releases.
       deb = pkgs.fetchurl {
         url = "https://github.com/Rodrigo-Matuz/kanatype/releases/download/${releaseTag}/kanatype_${version}_amd64.deb";
-        hash = "sha256-Kq8W1PjD0PR1xFC9NUP8o+OA1H0TwW3K+84A5UZ/a8k=";
+        hash = "sha256-WqwvxT5JkqCYkM9C/Z8RaLyVkeimroF+TnS0h/kMGKU=";
       };
       package = pkgs.stdenv.mkDerivation {
         pname = "kanatype";
@@ -40,7 +40,7 @@
           install -Dm755 usr/bin/kanatype "$out/bin/kanatype"
           mkdir -p "$out/share"
           cp -r usr/share/. "$out/share/"
-          # The 1.2.0 .deb ships the branded desktop entry and offline corpus.
+          # The 1.3.0 .deb ships the branded desktop entry and offline corpus.
           runHook postInstall
         '';
         meta = {
