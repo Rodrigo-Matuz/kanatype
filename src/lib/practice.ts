@@ -11,6 +11,12 @@ export function normalizeAnswer(answer: string): string {
 	return answer.trim().toLowerCase();
 }
 
+// Dictionary glosses can contain accents or older Portuguese spellings (e.g. "idéia").
+// Keep romaji checking strict; apply this only to meanings and meaning searches.
+export function normalizeMeaningAnswer(answer: string): string {
+	return normalizeAnswer(answer).normalize("NFD").replace(/\p{M}/gu, "");
+}
+
 export function pickNext(
 	items: readonly JapaneseItem[],
 	previous: JapaneseItem | null,

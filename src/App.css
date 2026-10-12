@@ -205,6 +205,8 @@
 .header-leading, .header-actions, .script-switcher { display: flex; align-items: center; gap: 10px; }
 .header-leading { flex: 1; min-width: 210px; }
 .header-actions { justify-content: flex-end; }
+.header-actions select { height: 32px; max-width: 165px; border: 1px solid var(--border); border-radius: 0; padding: 0 7px; background: var(--background); color: var(--foreground); font: inherit; font-size: 12px; }
+.header-actions select:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .header-leading.draggable { cursor: grab; }
 .window-controls { display: flex; align-items: center; gap: 2px; padding-left: 8px; border-left: 1px solid var(--border); }
 .window-controls button:last-child:hover { background: var(--destructive); color: var(--destructive-foreground); }

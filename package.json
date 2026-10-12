@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
+		"check:translations": "bun scripts/check-translations.ts",
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"tauri": "tauri"
@@ -34,6 +35,7 @@
 		"@vitejs/plugin-react": "^4.6.0",
 		"autoprefixer": "^10.5.0",
 		"fast-xml-parser": "^5.11.2",
+		"happy-dom": "^21.0.1",
 		"postcss": "^8.5.12",
 		"shadcn": "^4.5.0",
 		"tailwindcss": "^4.2.4",

@@ -7,6 +7,7 @@ import Display from "@/components/Display";
 import Header from "@/components/Header";
 import Input from "@/components/Input";
 import { getPracticePool, type PracticeSelection } from "@/data/practice-pool";
+import { useLanguage } from "@/i18n/LanguageProvider";
 import type { JLPTLevel } from "@/lib/jlpt/filter";
 import { pickNext } from "@/lib/practice";
 import TablePage from "@/pages/Table";
@@ -33,16 +34,44 @@ function savedSelection(): PracticeSelection {
 }
 
 export default function App() {
+	const { language, t } = useLanguage();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [activeScripts, setActiveScripts] = useState<ScriptType[]>(["hiragana"]);
 	const [selection, setSelection] = useState<PracticeSelection>(savedSelection);
 	const [currentItem, setCurrentItem] = useState<JapaneseItem>(() =>
-		pickNext(getPracticePool(["hiragana"], defaultSelection), null),
+		pickNext(getPracticePool(["hiragana"], defaultSelection, language), null),
 	);
 	const [completed, setCompleted] = useState(0);
 	const [streak, setStreak] = useState(0);
 	const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const previousLanguage = useRef(language);
+	useEffect(() => {
+		if (previousLanguage.current === language) return;
+		previousLanguage.current = language;
+		const credited = advanceTimer.current !== null;
+		if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
+		advanceTimer.current = null;
+		setCurrentItem((previous) => {
+			const pool = getPracticePool(activeScripts, selection, language);
+			if (credited) return pickNext(pool, previous);
+			return (
+				pool.find(
+					(item) =>
+						item.type === previous.type &&
+						(item.type === "kanji"
+							? item.kanji === (previous as typeof item).kanji &&
+								item.question === (previous as typeof item).question
+							: item.kana === (previous as typeof item).kana),
+				) ?? pickNext(pool, previous)
+			);
+		});
+	}, [language, activeScripts, selection]);
+	useEffect(() => {
+		document.title = t("app.title");
+		const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+		if (description) description.content = t("practice.intro");
+	}, [t]);
 
 	useEffect(
 		() => () => {
@@ -63,10 +92,10 @@ export default function App() {
 			advanceTimer.current = null;
 			// The answer was credited already; don't offer it again on return.
 			setCurrentItem((previous) =>
-				pickNext(getPracticePool(activeScripts, selection), previous),
+				pickNext(getPracticePool(activeScripts, selection, language), previous),
 			);
 		}
-	}, [location.pathname, activeScripts, selection]);
+	}, [location.pathname, activeScripts, selection, language]);
 
 	function cancelAdvance() {
 		if (advanceTimer.current !== null) clearTimeout(advanceTimer.current);
@@ -76,13 +105,17 @@ export default function App() {
 	function chooseScripts(scripts: ScriptType[]) {
 		cancelAdvance();
 		setActiveScripts(scripts);
-		setCurrentItem((previous) => pickNext(getPracticePool(scripts, selection), previous));
+		setCurrentItem((previous) =>
+			pickNext(getPracticePool(scripts, selection, language), previous),
+		);
 	}
 
 	function chooseSelection(next: PracticeSelection) {
 		cancelAdvance();
 		setSelection(next);
-		setCurrentItem((previous) => pickNext(getPracticePool(activeScripts, next), previous));
+		setCurrentItem((previous) =>
+			pickNext(getPracticePool(activeScripts, next, language), previous),
+		);
 	}
 
 	function toggleScript(script: ScriptType) {
@@ -96,10 +129,13 @@ export default function App() {
 	}
 
 	function advance() {
-		setCurrentItem((previous) => pickNext(getPracticePool(activeScripts, selection), previous));
+		setCurrentItem((previous) =>
+			pickNext(getPracticePool(activeScripts, selection, language), previous),
+		);
 	}
 
 	function handleCorrect() {
+		if (advanceTimer.current !== null) return;
 		setCompleted((value) => value + 1);
 		setStreak((value) => value + 1);
 		// Credit the answer now; keep the current prompt briefly for visible feedback.
@@ -113,7 +149,11 @@ export default function App() {
 		setStreak(0);
 		advance();
 	}
-	const kanjiCount = getPracticePool(["kanji"], selection).length;
+	const kanjiCount = getPracticePool(["kanji"], selection, language).length;
+	const englishCount =
+		language === "pt-BR" && selection.mode === "meaning"
+			? getPracticePool(["kanji"], selection, "en").length
+			: kanjiCount;
 
 	return (
 		<Routes>
@@ -130,20 +170,17 @@ export default function App() {
 						/>
 						<main className="practice-main">
 							<div className="practice-intro">
-								<p className="eyebrow">JAPANESE TYPING PRACTICE / 01</p>
-								<h1>Learn one character at a time.</h1>
-								<p>
-									Practice kana and curated readings, or recognize JLPT-aligned
-									kanji meanings.
-								</p>
+								<p className="eyebrow">{t("practice.eyebrow")}</p>
+								<h1>{t("practice.title")}</h1>
+								<p>{t("practice.intro")}</p>
 							</div>
 							{activeScripts.includes("kanji") && (
 								<section
 									className="level-controls"
-									aria-label="Kanji study settings"
+									aria-label={t("practice.settings.label")}
 								>
 									<label htmlFor="kanji-mode">
-										Kanji questions
+										{t("practice.settings.questions")}
 										<select
 											id="kanji-mode"
 											value={selection.mode}
@@ -155,14 +192,18 @@ export default function App() {
 												})
 											}
 										>
-											<option value="reading">Curated romaji readings</option>
-											<option value="meaning">JLPT-aligned meanings</option>
+											<option value="reading">
+												{t("practice.settings.readings")}
+											</option>
+											<option value="meaning">
+												{t("practice.settings.meanings")}
+											</option>
 										</select>
 									</label>
 									{selection.mode === "meaning" && (
 										<>
 											<label htmlFor="jlpt-level">
-												Study level
+												{t("practice.settings.level")}
 												<select
 													id="jlpt-level"
 													value={selection.level}
@@ -183,7 +224,7 @@ export default function App() {
 												</select>
 											</label>
 											<label htmlFor="jlpt-scope">
-												Coverage
+												{t("practice.settings.coverage")}
 												<select
 													id="jlpt-scope"
 													value={selection.scope}
@@ -196,62 +237,84 @@ export default function App() {
 													}
 												>
 													<option value="through">
-														Through N{selection.level} (cumulative)
+														{t("practice.coverage.through", {
+															level: selection.level,
+														})}
 													</option>
 													<option value="exact">
-														N{selection.level} only
+														{t("practice.coverage.exact", {
+															level: selection.level,
+														})}
 													</option>
 												</select>
 											</label>
 										</>
 									)}
 									<p>
-										{kanjiCount} kanji prompts ·{" "}
-										{selection.mode === "meaning"
-											? "English dictionary glosses, not official JLPT requirements"
-											: "curated romaji readings"}
-										. Kana toggles are independent.
+										{t("practice.count", {
+											count: kanjiCount,
+											description:
+												selection.mode === "reading"
+													? t("practice.count.readings")
+													: t(
+															language === "pt-BR"
+																? "practice.count.meaningsPt"
+																: "practice.count.meanings",
+														),
+										})}
 									</p>
+									{language === "pt-BR" &&
+										selection.mode === "meaning" &&
+										kanjiCount < englishCount && (
+											<p>
+												{t("practice.count.partial", {
+													count: kanjiCount,
+													total: englishCount,
+												})}
+											</p>
+										)}
 								</section>
 							)}
 							<div className="practice-card">
 								<div className="practice-card-top">
-									<span>{currentItem.type.toUpperCase()}</span>
-									<span>READ · TYPE · REMEMBER</span>
+									<span>
+										{t(`app.scripts.${currentItem.type}`).toUpperCase()}
+									</span>
+									<span>{t("practice.card.tagline")}</span>
 								</div>
 								<Display item={currentItem} />
 								<Input
-									key={`${currentItem.type}-${currentItem.type === "kanji" ? currentItem.kanji : currentItem.kana}-${selection.mode}-${selection.level}-${selection.scope}`}
+									key={`${language}-${currentItem.type}-${currentItem.type === "kanji" ? currentItem.kanji : currentItem.kana}-${selection.mode}-${selection.level}-${selection.scope}`}
 									currentItem={currentItem}
 									onCorrect={handleCorrect}
 									onSkip={handleSkip}
 									onWrong={() => setStreak(0)}
 								/>
 							</div>
-							<section className="practice-stats" aria-label="Practice progress">
-								<span>
-									<strong>{completed}</strong> answered
-								</span>
-								<span>
-									<strong>{streak}</strong> in a row
-								</span>
+							<section
+								className="practice-stats"
+								aria-label={t("practice.progress.label")}
+							>
+								<span>{t("practice.progress.answered", { count: completed })}</span>
+								<span>{t("practice.progress.streak", { count: streak })}</span>
 							</section>
 						</main>
 						<footer className="app-footer">
-							<span>KanataType · Practice makes familiar.</span>
+							<span>{t("practice.footer.tagline")}</span>
 							<a
 								href="https://github.com/Rodrigo-Matuz/kanatype"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								Project on GitHub <ExternalLink aria-hidden="true" size={14} />
+								{t("practice.footer.github")}{" "}
+								<ExternalLink aria-hidden="true" size={14} />
 							</a>
 							<a
 								href="https://github.com/Rodrigo-Matuz/kanatype/blob/main/docs/DATA_SOURCES.md"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								Data sources &amp; licenses{" "}
+								{t("practice.footer.sources")}{" "}
 								<ExternalLink aria-hidden="true" size={14} />
 							</a>
 						</footer>

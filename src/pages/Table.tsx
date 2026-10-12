@@ -4,7 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { CharacterSection } from "@/components/CharacterSection";
 import Header from "@/components/Header";
 import { getDataByTypes } from "@/data";
+import { getLocalizedMeanings } from "@/data/jlpt/meanings";
 import { curriculumKanji } from "@/data/practice-pool";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import type { Language } from "@/i18n/translation";
+import { normalizeMeaningAnswer } from "@/lib/practice";
 import type { JapaneseItem, KanaItem } from "@/types";
 
 const curriculumGlyphs = new Set(curriculumKanji.map((item) => item.kanji));
@@ -16,8 +20,43 @@ const allItems: JapaneseItem[] = [
 	),
 ];
 
+export function filterReferenceItems(
+	items: JapaneseItem[],
+	query: string,
+	language: Language,
+): JapaneseItem[] {
+	const trimmed = query.toLowerCase().trim();
+	const meaningQuery = normalizeMeaningAnswer(query);
+	if (!trimmed) return items;
+	return items.filter((item) => {
+		if (item.type === "kanji" && item.question === "meaning") {
+			const meanings = getLocalizedMeanings(item, language) ?? [];
+			return (
+				item.kanji.includes(trimmed) ||
+				meanings.some((meaning) =>
+					normalizeMeaningAnswer(meaning).includes(meaningQuery),
+				) ||
+				[...item.onReadings, ...item.kunReadings].some((reading) =>
+					reading.includes(trimmed),
+				) ||
+				`n${item.jlptLevel}` === trimmed
+			);
+		}
+		if (item.type === "kanji") {
+			const meanings = getLocalizedMeanings(item, language) ?? [];
+			return (
+				item.kanji.includes(trimmed) ||
+				item.romaji.toLowerCase().includes(trimmed) ||
+				meanings.some((meaning) => normalizeMeaningAnswer(meaning).includes(meaningQuery))
+			);
+		}
+		return item.kana.includes(trimmed) || item.romaji.toLowerCase().includes(trimmed);
+	});
+}
+
 export default function TablePage() {
 	const navigate = useNavigate();
+	const { language, t } = useLanguage();
 	const [search, setSearch] = useState("");
 	const [visibleKanji, setVisibleKanji] = useState(120);
 	const searchInputRef = useRef<HTMLInputElement>(null);
@@ -25,23 +64,10 @@ export default function TablePage() {
 		searchInputRef.current?.focus();
 	}, []);
 
-	const filteredItems = useMemo(() => {
-		const query = search.toLowerCase().trim();
-		if (!query) return allItems;
-		return allItems.filter((item) =>
-			item.type === "kanji"
-				? item.kanji.includes(query) ||
-					(item.question === "meaning"
-						? item.meanings.some((meaning) => meaning.toLowerCase().includes(query)) ||
-							[...item.onReadings, ...item.kunReadings].some((reading) =>
-								reading.includes(query),
-							) ||
-							`n${item.jlptLevel}` === query
-						: item.meaning.toLowerCase().includes(query) ||
-							item.romaji.toLowerCase().includes(query))
-				: item.kana.includes(query) || item.romaji.toLowerCase().includes(query),
-		);
-	}, [search]);
+	const filteredItems = useMemo(
+		() => filterReferenceItems(allItems, search, language),
+		[search, language],
+	);
 
 	const hiraganaItems = filteredItems.filter(
 		(item): item is KanaItem => item.type === "hiragana",
@@ -57,24 +83,25 @@ export default function TablePage() {
 			<main className="reference-main">
 				<div className="reference-intro">
 					<div>
-						<p className="eyebrow">THE LIBRARY / 02 · ALL LEVELS</p>
-						<h1>Character reference.</h1>
-						<p>
-							This reference spans all levels, regardless of practice filters. Search
-							by character, Japanese dictionary reading, meaning, or N-level.
-							JLPT-aligned study sets are not official exam requirements.
-						</p>
+						<p className="eyebrow">{t("reference.eyebrow")}</p>
+						<h1>{t("reference.title")}</h1>
+						<p>{t("reference.intro")}</p>
 					</div>
 					<span className="result-count">
-						{filteredItems.length}{" "}
-						{filteredItems.length === 1 ? "character" : "characters"}
+						{t(
+							filteredItems.length === 1
+								? "reference.count.one"
+								: "reference.count.other",
+							{
+								count: filteredItems.length,
+							},
+						)}
 					</span>
 				</div>
 				<div className="search-control">
 					<Search aria-hidden="true" size={20} />
 					<label htmlFor="character-search" className="sr-only">
-						Search kana or kanji, Japanese dictionary readings (not kanji romaji),
-						meanings, or N-levels
+						{t("reference.search.label")}
 					</label>
 					<input
 						id="character-search"
@@ -84,91 +111,90 @@ export default function TablePage() {
 							setSearch(event.target.value);
 							setVisibleKanji(120);
 						}}
-						placeholder="Search kanji, Japanese dictionary readings, meanings, N-levels…"
+						placeholder={t("reference.search.placeholder")}
 						spellCheck={false}
 					/>
 				</div>
 				<div className="reference-sections">
-					<CharacterSection title="Hiragana" items={hiraganaItems} />
-					<CharacterSection title="Katakana" items={katakanaItems} />
-					<CharacterSection title="Kanji" items={kanjiItems.slice(0, visibleKanji)} />
+					<CharacterSection
+						title={t("reference.section.hiragana")}
+						items={hiraganaItems}
+					/>
+					<CharacterSection
+						title={t("reference.section.katakana")}
+						items={katakanaItems}
+					/>
+					<CharacterSection
+						title={t("reference.section.kanji")}
+						items={kanjiItems.slice(0, visibleKanji)}
+					/>
 					{kanjiItems.length > visibleKanji && (
 						<button
 							type="button"
 							className="load-kanji"
 							onClick={() => setVisibleKanji((count) => count + 120)}
 						>
-							Showing {visibleKanji} of {kanjiItems.length} kanji · Show more
+							{t("reference.loadMore", {
+								visible: visibleKanji,
+								total: kanjiItems.length,
+							})}
 						</button>
 					)}
 					{filteredItems.length === 0 && (
-						<p className="empty-results">
-							No matches for “{search}”. Try another reading or character.
-						</p>
+						<p className="empty-results">{t("reference.empty", { query: search })}</p>
 					)}
 				</div>
 				<details className="data-sources">
-					<summary>About these kanji study sets &amp; data sources</summary>
+					<summary>{t("reference.sources.summary")}</summary>
+					<p>{t("reference.sources.overview")}</p>
 					<p>
-						These are unofficial, JLPT-aligned community study sets—not a list of kanji
-						required by the exam. N5 is introductory; N1 is advanced. The complete set
-						contains 2,211 kanji. English glosses are dictionary senses, not
-						context-specific translations. Readings in the reference are dictionary
-						metadata, not automatic answers.
-					</p>
-					<p>
-						Kanji readings and English meanings are adapted from{" "}
+						{t("reference.sources.dictionary.before")}{" "}
 						<a
 							href="https://www.edrdg.org/wiki/KANJIDIC_Project.html"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							EDRDG KANJIDIC2
+							{t("reference.sources.kanjidic")}
 						</a>{" "}
-						(copyright James William Breen, EDRDG and EDRDG contributors), licensed
-						under{" "}
+						{t("reference.sources.dictionary.after")}{" "}
 						<a
 							href="https://creativecommons.org/licenses/by-sa/4.0/"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							CC BY-SA 4.0
+							{t("reference.sources.dictionary.license")}
 						</a>
-						; see the{" "}
+						; {t("reference.sources.dictionary.seeThe")}{" "}
 						<a
 							href="https://www.edrdg.org/edrdg/licence.html"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							EDRDG licence and acknowledgements
+							{t("reference.sources.dictionary.ack")}
 						</a>
-						. KanataType extracts selected dictionary fields, joins them to level
-						assignments, filters to mapped kanji, and reformats the result as JSON. The
-						adapted dictionary metadata remains under CC BY-SA 4.0. Level assignments
-						come from{" "}
+						. {t("reference.sources.dictionary.transforms")}{" "}
 						<a
 							href="https://www.tanos.co.uk/jlpt/"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Tanos JLPT resources
+							{t("reference.sources.tanos")}
 						</a>
-						, via{" "}
+						, {t("reference.sources.levels.via")}{" "}
 						<a
 							href="https://github.com/onlyskin/kanjiapi.dev"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							KanjiAPI
+							{t("reference.sources.kanjiapi")}
 						</a>
-						. Tanos shares its lists under CC BY (version unspecified) and asks for
-						credit to the site. KanjiAPI compiled the level mapping. See the{" "}
+						. {t("reference.sources.levels.after")}{" "}
 						<a
 							href="https://github.com/Rodrigo-Matuz/kanatype/blob/main/docs/DATA_SOURCES.md"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							source and license details
+							{t("reference.sources.details")}
 						</a>
 						.
 					</p>

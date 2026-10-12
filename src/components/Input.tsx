@@ -1,6 +1,8 @@
 import { ArrowRight, Eye, SkipForward } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { getLocalizedMeanings } from "@/data/jlpt/meanings";
+import { useLanguage } from "@/i18n/LanguageProvider";
 import { isCorrectAnswer } from "@/lib/jlpt/answers";
 import { normalizeAnswer } from "@/lib/practice";
 import type { JapaneseItem } from "@/types";
@@ -13,11 +15,23 @@ type Props = {
 };
 
 export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props) {
+	const { language, t } = useLanguage();
 	const meaningQuestion = currentItem.type === "kanji" && currentItem.question === "meaning";
-	const hint =
-		currentItem.type === "kanji" && currentItem.question === "meaning"
-			? `Meanings: ${currentItem.meanings.join(", ")}`
-			: `Reading: ${currentItem.romaji}${currentItem.type === "kanji" ? ` · ${currentItem.meaning}` : ""}`;
+	const meanings = getLocalizedMeanings(currentItem, language);
+	let hint: string;
+	if (currentItem.type === "kanji" && currentItem.question === "meaning") {
+		hint = meanings?.length
+			? t("answer.hint.meanings", { meanings: meanings.join(", ") })
+			: t("reference.meaningMissing");
+	} else {
+		hint =
+			currentItem.type === "kanji" && meanings?.length
+				? t("answer.hint.readingMeaning", {
+						reading: currentItem.romaji,
+						meaning: meanings.join(", "),
+					})
+				: t("answer.hint.reading", { reading: currentItem.romaji });
+	}
 	const [answer, setAnswer] = useState("");
 	const [feedback, setFeedback] = useState<"idle" | "correct" | "wrong">("idle");
 	const [showHint, setShowHint] = useState(false);
@@ -32,7 +46,7 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 		event.preventDefault();
 		if (!normalizeAnswer(answer) || answered.current) return;
 
-		if (isCorrectAnswer(answer, currentItem)) {
+		if (isCorrectAnswer(answer, currentItem, language)) {
 			answered.current = true;
 			setFeedback("correct");
 			onCorrect();
@@ -48,7 +62,13 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 		<div className="answer-area">
 			<form onSubmit={checkAnswer} className="answer-form">
 				<label htmlFor="romaji-answer" className="answer-label">
-					Your answer <span>· {meaningQuestion ? "ENGLISH MEANING" : "ROMAJI"}</span>
+					{t("answer.label")}{" "}
+					<span>
+						·{" "}
+						{meaningQuestion
+							? t(language === "pt-BR" ? "answer.meaningPt" : "answer.meaning")
+							: t("answer.romaji")}
+					</span>
 				</label>
 				<div
 					className={`answer-control ${feedback === "wrong" ? "answer-wrong" : ""} ${feedback === "correct" ? "answer-correct" : ""}`}
@@ -62,9 +82,11 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 							setAnswer(event.target.value);
 							if (feedback === "wrong") setFeedback("idle");
 						}}
-						placeholder={
-							meaningQuestion ? "Type a dictionary meaning…" : "Type the reading…"
-						}
+						placeholder={t(
+							meaningQuestion
+								? "answer.placeholder.meaning"
+								: "answer.placeholder.reading",
+						)}
 						autoComplete="off"
 						spellCheck={false}
 						autoCapitalize="off"
@@ -72,19 +94,19 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 						disabled={feedback === "correct"}
 					/>
 					<Button type="submit" disabled={!answer.trim() || feedback === "correct"}>
-						Check <ArrowRight aria-hidden="true" size={16} />
+						{t("answer.check")} <ArrowRight aria-hidden="true" size={16} />
 					</Button>
 				</div>
 			</form>
 			<div className="answer-meta">
 				<output id="answer-feedback" aria-live="polite">
 					{feedback === "correct"
-						? "Correct! On to the next character."
+						? t("answer.feedback.correct")
 						: feedback === "wrong"
-							? "Not quite — try again."
+							? t("answer.feedback.wrong")
 							: showHint
 								? hint
-								: "Press Enter to check your answer."}
+								: t("answer.feedback.idle")}
 				</output>
 				<div className="answer-actions">
 					<Button
@@ -98,7 +120,7 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 						}}
 						disabled={feedback === "correct"}
 					>
-						<Eye aria-hidden="true" size={16} /> Hint
+						<Eye aria-hidden="true" size={16} /> {t("answer.hint")}
 					</Button>
 					<Button
 						type="button"
@@ -107,7 +129,7 @@ export default function Input({ currentItem, onCorrect, onSkip, onWrong }: Props
 						onClick={onSkip}
 						disabled={feedback === "correct"}
 					>
-						<SkipForward aria-hidden="true" size={16} /> Skip
+						<SkipForward aria-hidden="true" size={16} /> {t("answer.skip")}
 					</Button>
 				</div>
 			</div>

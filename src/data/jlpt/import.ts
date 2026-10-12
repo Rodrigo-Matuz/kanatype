@@ -16,16 +16,39 @@ type Character = {
 	reading_meaning?: { rmgroup: { reading?: Reading[]; meaning?: Meaning[] }[] };
 };
 
-export function buildCurriculum(xml: string, levels: Map<string, JLPTLevel>): CurriculumKanji[] {
+function parseCharacters(xml: string): Map<string, Character> {
 	const parser = new XMLParser({
 		ignoreAttributes: false,
 		parseTagValue: false,
 		isArray: (tag: string) => ["character", "rmgroup", "reading", "meaning"].includes(tag),
 	});
 	const document = parser.parse(xml) as { kanjidic2?: { character?: Character[] } };
-	const characters = new Map(
-		(document.kanjidic2?.character ?? []).map((character) => [character.literal, character]),
-	);
+	return new Map((document.kanjidic2?.character ?? []).map((entry) => [entry.literal, entry]));
+}
+
+export function buildPortugueseMeanings(
+	xml: string,
+	levels: Map<string, JLPTLevel>,
+): Record<string, string[]> {
+	const characters = parseCharacters(xml);
+	const result: Record<string, string[]> = {};
+	for (const kanji of levels.keys()) {
+		const character = characters.get(kanji);
+		if (!character) throw new Error(`Missing dictionary entry for ${kanji}`);
+		const meanings = (character.reading_meaning?.rmgroup ?? []).flatMap((group) =>
+			(group.meaning ?? []).flatMap((meaning) =>
+				typeof meaning !== "string" && meaning["@_m_lang"] === "pt"
+					? [meaning["#text"]]
+					: [],
+			),
+		);
+		if (meanings.length) result[kanji] = meanings;
+	}
+	return result;
+}
+
+export function buildCurriculum(xml: string, levels: Map<string, JLPTLevel>): CurriculumKanji[] {
+	const characters = parseCharacters(xml);
 	return [...levels].map(([kanji, jlptLevel]) => {
 		const character = characters.get(kanji);
 		if (!character) throw new Error(`Missing dictionary entry for ${kanji}`);

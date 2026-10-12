@@ -1,8 +1,10 @@
+import { useLanguage } from "@/i18n/LanguageProvider";
 import type { JapaneseItem } from "@/types";
 
 type Props = { item: JapaneseItem };
 
 export default function Display({ item }: Props) {
+	const { language, t } = useLanguage();
 	const character = item.type === "kanji" ? item.kanji : item.kana;
 
 	return (
@@ -12,8 +14,15 @@ export default function Display({ item }: Props) {
 			</span>
 			<p className="character-caption">
 				{item.type === "kanji" && item.question === "meaning"
-					? `What does this N${item.jlptLevel} character mean? Type an English dictionary gloss.`
-					: "What does this character sound like?"}
+					? t(
+							language === "pt-BR"
+								? "display.meaningPromptPt"
+								: "display.meaningPrompt",
+							{
+								level: item.jlptLevel,
+							},
+						)
+					: t("display.readingPrompt")}
 			</p>
 		</div>
 	);

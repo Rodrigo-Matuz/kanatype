@@ -16,11 +16,12 @@ Built with **Tauri** for a lightweight, native-feeling experience.
 
 - **Multiple Script Modes**: Practice Hiragana, Katakana, Kanji — individually or combined
 - **Smart Filtering**: Toggle any combination of scripts (always at least one active)
-- **Interactive Learning**: Type a romaji reading for kana or the curated kanji prompts; choose JLPT-aligned kanji mode to type an English dictionary meaning. Hints, skips, counts, and streaks work in both modes
+- **Interactive Learning**: Type a romaji reading for kana or the curated kanji prompts; choose JLPT-aligned kanji mode to type an English or Portuguese dictionary meaning, according to the selected app language. Hints, skips, counts, and streaks work in both modes
 - **Level Selection**: Practice N5 through N1 kanji by introduction level or cumulatively (for example, Through N3 includes N5 + N4 + N3); kana toggles remain independent
 - **Reference Table**: Search the full kana and kanji library by character, reading, meaning, or N-level; progressively show more results
 - **Dark/Light Theme**: Built-in theme switcher that follows the system by default
 - **Responsive UI**: Keyboard-accessible React + TypeScript interface
+- **English / Brazilian Portuguese**: Switch languages on either screen; the choice persists, and Portuguese meaning prompts accept Portuguese answers instead of English ones
 
 ---
 
@@ -159,7 +160,11 @@ This document includes explanations about small characters, yōon combinations, 
 
 An offline, generated **unofficial** kanji study corpus is available at `src/data/jlpt/curriculum.json`. Its 2,211 entries are grouped as N5 (79), N4 (166), N3 (367), N2 (367), and N1 (1,232). Regenerate it from the pinned bundled sources with `bun scripts/generate-jlpt.ts`. See [data sources, checksums, transformations and attribution](docs/DATA_SOURCES.md) and the [implementation plan](docs/JLPT_PLAN.md).
 
-Select Kanji, then choose **JLPT-aligned meanings**, a level, and **Through N…** or **N… only**. The full 2,211-entry set uses typed English dictionary glosses; it does **not** claim to teach every character's reading in context. The existing 140 curated romaji questions remain a separate mode. The [JLPT does not publish an official post-2010 kanji list](https://www.jlpt.jp/e/faq/index.html#anchor28); these levels are approximate study groupings, not exam requirements or a measure of readiness. The already-published 1.1.0 installers still predate this work; the release-pinned Nix package also remains on 1.1.0.
+Select Kanji, then choose **JLPT-aligned meanings**, a level, and **Through N…** or **N… only**. English mode covers all 2,211 entries. Portuguese mode offers meaning questions for the 1,929 entries with Portuguese KANJIDIC2 glosses (all N5–N2 entries and 950 N1 entries); the other 282 remain browsable in the reference with an untranslated label, not English-only practice questions. Kana and the existing 140 curated romaji-reading questions are unchanged in both languages. Dictionary-meaning answers and searches ignore accents (so `ideia` matches `idéia`), while romaji spelling remains strict. These sets do **not** teach every character's reading in context. The [JLPT does not publish an official post-2010 kanji list](https://www.jlpt.jp/e/faq/index.html#anchor28); these levels are approximate study groupings, not exam requirements or a measure of readiness. The published 1.2.0 installers and release-pinned Nix package predate the Portuguese localization in the current source tree.
+
+### Help translate
+
+Interface strings live in [`src/i18n/en.json`](src/i18n/en.json) and [`src/i18n/pt-BR.json`](src/i18n/pt-BR.json). Edit a catalog using the same dotted keys and `{placeholders}` as English; run `bun run check:translations`, `bun test`, and `bun run build`. For a **new locale**, add its JSON catalog, register it in `src/i18n/translation.ts`, include it in the language selector in `src/components/Header.tsx`, and provide vetted locale-specific kanji meanings before enabling meaning practice in that language. Meaning answers are **data**, not interface strings: the Portuguese meanings in `src/data/jlpt/pt-meanings.json` are reproducibly extracted from the pinned KANJIDIC2 XML, and the JSON must retain its [data license and attribution](docs/DATA_SOURCES.md). Never translate romaji answer keys or auto-guess a single reading from dictionary metadata.
 
 ---
 
